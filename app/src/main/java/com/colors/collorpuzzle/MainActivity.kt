@@ -15,6 +15,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.colors.collorpuzzle.ui.screens.main_menu.composable.ShowMainMenu
 import com.colors.collorpuzzle.ui.screens.stage_screen.composable.StageScreen
+import com.colors.collorpuzzle.ui.screens.stage_selector.composable.StageSelectorScreen
 import com.colors.collorpuzzle.ui.theme.ColorPuzzleTheme
 
 class MainActivity : ComponentActivity() {
@@ -41,7 +42,7 @@ class MainActivity : ComponentActivity() {
                 ShowMainMenu(
                     Modifier.fillMaxSize(),
                     playClicked = {
-                        navController.navigate(PuzzleNavigation.GameScreen.route)
+                        navController.navigate(PuzzleNavigation.StageSelector.route)
                     },
                     randomStageClicked = {
                         // TODO:
@@ -51,7 +52,18 @@ class MainActivity : ComponentActivity() {
                     })
             }
             composable(route = PuzzleNavigation.GameScreen.route) {
-                StageScreen(Modifier)
+                StageScreen(modifier = Modifier)
+            }
+
+            composable(route = PuzzleNavigation.StageSelector.route) {
+                StageSelectorScreen(
+                    modifier = Modifier,
+                    backClick = {
+                        navController.navigateUp()
+                    },
+                    selectStageClick = {
+                        navController.navigate(PuzzleNavigation.GameScreen.route)
+                    })
             }
         }
     }

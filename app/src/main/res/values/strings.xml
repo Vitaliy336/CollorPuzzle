@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">CollorPuzzle</string>
+    <string name="app_name">ColorPuzzle</string>
+    <string name="main_menu">Main Menu</string>
+    <string name="start_game">Play</string>
+    <string name="constructor_mode">Stage constructor</string>
+    <string name="random_mode">Random mode</string>
+    <string name="stage_select">Select Stage</string>
 </resources>

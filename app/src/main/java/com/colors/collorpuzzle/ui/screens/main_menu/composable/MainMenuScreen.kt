@@ -6,13 +6,18 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.colors.collorpuzzle.R
 
 @Composable
 fun ShowMainMenu(
@@ -21,19 +26,36 @@ fun ShowMainMenu(
     randomStageClicked: () -> Unit,
     constructorClicked: () -> Unit,
 ) {
-    Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier
-    ) {
-        Text(text = "Main menu")
-        val btnModifier: Modifier = Modifier
-            .height(56.dp)
-            .fillMaxWidth()
-            .padding(start = 200.dp, end = 200.dp, top = 8.dp, bottom = 8.dp)
-        MenuButton(modifier = btnModifier, "Play", playClicked)
-        MenuButton(modifier = btnModifier, "Random Mode", randomStageClicked)
-        MenuButton(modifier = btnModifier, "Constructor", constructorClicked)
+    Surface {
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = modifier
+        ) {
+            Text(text = stringResource(R.string.main_menu),
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.headlineMedium,
+                color = MaterialTheme.colorScheme.onSurface)
+            val btnModifier: Modifier = Modifier
+                .height(56.dp)
+                .fillMaxWidth()
+                .padding(start = 200.dp, end = 200.dp, top = 8.dp, bottom = 8.dp)
+            MenuButton(
+                modifier = btnModifier,
+                stringResource(R.string.start_game),
+                playClicked
+            )
+            MenuButton(
+                modifier = btnModifier,
+                stringResource(R.string.random_mode),
+                randomStageClicked
+            )
+            MenuButton(
+                modifier = btnModifier,
+                stringResource(R.string.constructor_mode),
+                constructorClicked
+            )
+        }
     }
 }
 
@@ -51,6 +73,15 @@ fun MenuButton(
     }
 }
 
+
+@Preview
+@Composable
+fun ButtonPreview() {
+    MenuButton(
+        modifier = Modifier,
+        "Some Text",
+        {})
+}
 
 @Preview
 @Composable
