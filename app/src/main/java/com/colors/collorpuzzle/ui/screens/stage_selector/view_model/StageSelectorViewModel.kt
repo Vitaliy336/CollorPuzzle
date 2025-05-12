@@ -1,11 +1,13 @@
 package com.colors.collorpuzzle.ui.screens.stage_selector.view_model
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.colors.collorpuzzle.data.local.PuzzleDataStore
 import com.colors.collorpuzzle.data.repo.RemoteConfigRepo
 import com.colors.collorpuzzle.data.repo.RemoteConfigRepoImpl
 import kotlinx.coroutines.delay
+import com.colors.collorpuzzle.ui.screens.stage_selector.StageSelectionIntent
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -35,13 +37,19 @@ class StageSelectorViewModel(
 
     val levelsStateFlow: StateFlow<LevelsState> = _levelsFlow
 
+    fun handleIntent(stageSelectionIntent: StageSelectionIntent) {
+        when (stageSelectionIntent) {
+            is StageSelectionIntent.FetchStages -> fetchLevelsData()
+         }
+    }
+
     sealed class LevelsState {
         object Loading : LevelsState()
         object Error : LevelsState()
         data class Success(val data: List<StagesData>) : LevelsState()
     }
 
-    fun fetchLevelsData() {
+   private fun fetchLevelsData() {
         viewModelScope.launch {
             _config.combine(_levels) { config, levels ->
                 when (config) {
@@ -73,4 +81,3 @@ class StageSelectorViewModel(
         }
     }
 }
-
