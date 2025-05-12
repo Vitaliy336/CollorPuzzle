@@ -1,5 +1,6 @@
 package com.colors.collorpuzzle.ui.screens.stage_selector.composable
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -25,6 +26,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,55 +40,82 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.colors.collorpuzzle.R
+import com.colors.collorpuzzle.ui.screens.stage_selector.view_model.StageSelectorViewModel
+import com.colors.collorpuzzle.ui.screens.stage_selector.view_model.StagesData
+import org.koin.compose.viewmodel.koinViewModel
 
+private const val TAG = "StageSelector"
 @Composable
 fun StageSelectorScreen(
     modifier: Modifier,
     backClick: () -> Unit,
     selectStageClick: () -> Unit,
 ) {
+    val vm = koinViewModel<StageSelectorViewModel>()
+    val state = vm.levelsStateFlow.collectAsState()
+    vm.test()
     Surface {
-        Column(
-            modifier = modifier
-                .windowInsetsPadding(WindowInsets.safeDrawing)
-                .padding(
-                    start = 16.dp,
-                    end = 16.dp,
-                    top = 20.dp,
-                    bottom = 20.dp
+        when (state.value) {
+            is StageSelectorViewModel.LevelsState.Loading -> {
+                Log.d(TAG, "StageSelectorScreen: ")
+            }
+            is StageSelectorViewModel.LevelsState.Error -> {
+                Log.d(TAG, "StageSelectorScreen: ")
+            }
+            is StageSelectorViewModel.LevelsState.Success -> {
+                ShowStages(
+                    stagesData = (state.value as StageSelectorViewModel.LevelsState.Success).data,
+                    modifier = modifier,
+                    backClick = backClick,
+                    selectStageClick = selectStageClick
                 )
-        ) {
-            BackButton(
-                modifier = Modifier.align(alignment = Alignment.End),
-                backClick = backClick
-            )
-
-            Text(
-                text = stringResource(R.string.stage_select), modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(
-                        start = 8.dp,
-                        end = 8.dp,
-                        top = 12.dp,
-                        bottom = 12.dp
-                    ),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-
-            StagesList(
-                stagesList = listOf(
-                    Stages("name1", listOf("1", "2", "3", "4")),
-                    Stages("name2", listOf("1", "2", "3", "4", "5")),
-                    Stages("name3", listOf("1", "2")),
-                    Stages("name4", listOf("1", "2", "3", "4", "5", "6", "7", "8")),
-                    Stages("name5", listOf("1", "2", "3"))
-                ),
-                stageClick = selectStageClick
-            )
+            }
         }
+    }
+}
+
+@Composable
+fun ShowStages(
+    stagesData: List<StagesData>,
+    modifier: Modifier = Modifier,
+    backClick: () -> Unit,
+    selectStageClick: () -> Unit,
+) {
+    Column(
+        modifier = modifier
+            .windowInsetsPadding(WindowInsets.safeDrawing)
+            .padding(
+                start = 16.dp,
+                end = 16.dp,
+                top = 20.dp,
+                bottom = 20.dp
+            )
+    ) {
+        BackButton(
+            modifier = Modifier.align(alignment = Alignment.End),
+            backClick = backClick
+        )
+
+        Text(
+            text = stringResource(R.string.stage_select), modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .padding(
+                    start = 8.dp,
+                    end = 8.dp,
+                    top = 12.dp,
+                    bottom = 12.dp
+                ),
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.headlineMedium,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+
+
+        StagesList(
+            stagesList = stagesData,
+            stageClick = selectStageClick
+        )
     }
 }
 
@@ -109,7 +138,10 @@ fun BackButton(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun StagesList(stagesList: List<Stages>, stageClick: () -> Unit) {
+fun StagesList(
+    stagesList: List<StagesData>,
+    stageClick: () -> Unit,
+) {
     LazyColumn {
         items(stagesList) { stage ->
             StagesRow(
@@ -118,7 +150,6 @@ fun StagesList(stagesList: List<Stages>, stageClick: () -> Unit) {
                 stageClick = stageClick
             )
         }
-
     }
 }
 
@@ -127,7 +158,7 @@ fun StagesList(stagesList: List<Stages>, stageClick: () -> Unit) {
 fun StagesRow(
     modifier: Modifier = Modifier,
     stageHeader: String,
-    stageItems: List<String> = listOf(),
+    stageItems: List<StagesData.StageData> = listOf(),
     stageClick: () -> Unit,
 ) {
     Column(
@@ -143,8 +174,8 @@ fun StagesRow(
         ) {
             repeat(stageItems.size) { index ->
                 StageItem(
-                    stageItems[index],
-                    false,
+                    index.toString(),
+                    stageItems[index].isCleared,
                     modifier.padding(vertical = 4.dp),
                     stageClick
                 )
@@ -212,7 +243,7 @@ fun StageItem(
 @Composable
 fun StagesRowPreview() {
     StagesRow(
-        stageItems = listOf("1", "2", "3", "4", "5", "6"),
+        stageItems = listOf(),
         stageHeader = "name1",
         stageClick = {}
     )

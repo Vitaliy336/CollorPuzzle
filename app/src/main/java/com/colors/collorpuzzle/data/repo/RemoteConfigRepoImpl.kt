@@ -16,10 +16,10 @@ private const val PALETTE_STAGES = "palette_stages"
 class RemoteConfigRepoImpl : RemoteConfigRepo {
 
     private val gson = Gson()
-    private val configStateFlow = MutableStateFlow<ConfigState>(ConfigState.Loading())
+    private val _configStateFlow = MutableStateFlow<ConfigState>(ConfigState.Loading())
+    private val configFlow: StateFlow<ConfigState> = _configStateFlow
     private val config = Firebase.remoteConfig
     private val stages: List<Stages> by lazy {
-
         val jsonStr = config.getString(PALETTE_STAGES)
         val type = genericType<List<Stages>>()
         gson.fromJson(jsonStr, type)
@@ -39,16 +39,16 @@ class RemoteConfigRepoImpl : RemoteConfigRepo {
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     Log.d(TAG, "initConfigs: ${task.result}")
-                    configStateFlow.value = ConfigState.Success()
+                    _configStateFlow.value = ConfigState.Success(stages)
                 } else {
                     Log.d(TAG, "failed to fetch config")
-                    configStateFlow.value = ConfigState.Error()
+                    _configStateFlow.value = ConfigState.Error()
                 }
             }
     }
 
     override fun getConfigState(): StateFlow<ConfigState> {
-       return configStateFlow
+       return configFlow
     }
 
     override fun getConfigs(): List<Stages> {
@@ -58,6 +58,6 @@ class RemoteConfigRepoImpl : RemoteConfigRepo {
     sealed class ConfigState {
         class Loading() : ConfigState()
         class Error() : ConfigState()
-        class Success() : ConfigState()
+        class Success(val config: List<Stages>) : ConfigState()
     }
 }

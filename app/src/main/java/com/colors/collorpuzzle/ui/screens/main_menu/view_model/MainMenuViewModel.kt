@@ -16,7 +16,7 @@ class MainMenuViewModel(val repo: RemoteConfigRepo) : ViewModel() {
         viewModelScope.launch {
             repo.getConfigState().collect { state ->
                 when (state) {
-                    is RemoteConfigRepoImpl.ConfigState.Success -> repo.getConfigs()
+                    is RemoteConfigRepoImpl.ConfigState.Success -> state.config
                     is RemoteConfigRepoImpl.ConfigState.Error -> ""
                     else -> ""
                 }

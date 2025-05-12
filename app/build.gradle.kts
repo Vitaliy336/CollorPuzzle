@@ -68,6 +68,9 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.config)
 
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.datastore.preferences.core)
+
     implementation(libs.insert.koin.koin.android)
     implementation(libs.koin.compose)
     implementation(libs.koin.compose.viewmodel)

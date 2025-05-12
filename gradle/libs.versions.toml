@@ -1,5 +1,6 @@
 [versions]
 agp = "8.3.0"
+datastorePreferences = "1.1.6"
 firebaseBom = "33.13.0"
 firebaseBomVersion = "33.13.0"
 graphicsShapes = "1.1.0-alpha01"
@@ -23,6 +24,8 @@ navigationCompose = "2.8.9"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
+androidx-datastore-preferences-core = { module = "androidx.datastore:datastore-preferences-core", version.ref = "datastorePreferences" }
 androidx-graphics-shapes = { module = "androidx.graphics:graphics-shapes", version.ref = "graphicsShapes" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBomVersion" }
