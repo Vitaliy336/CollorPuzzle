@@ -58,7 +58,7 @@ class StageSelectorViewModel(
                     is RemoteConfigRepoImpl.ConfigState.Loading -> {
                         _levelsFlow.value =
                             LevelsState.Loading
-                        delay(3000) // just to simulate loading
+                        delay(2000) // just to simulate loading
                     }
 
                     is RemoteConfigRepoImpl.ConfigState.Success -> _levelsFlow.value =

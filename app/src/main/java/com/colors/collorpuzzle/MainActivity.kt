@@ -1,6 +1,7 @@
 package com.colors.collorpuzzle
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -18,6 +19,7 @@ import com.colors.collorpuzzle.ui.screens.stage_screen.composable.StageScreen
 import com.colors.collorpuzzle.ui.screens.stage_selector.composable.StageSelectorScreen
 import com.colors.collorpuzzle.ui.theme.ColorPuzzleTheme
 
+private const val TAG = "MainActivity"
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,7 +63,8 @@ class MainActivity : ComponentActivity() {
                     backClick = {
                         navController.navigateUp()
                     },
-                    selectStageClick = {
+                    selectStageClick = { name ->
+                        Log.d(TAG, "NavigationComponent: selected stage name = $name", )
                         navController.navigate(PuzzleNavigation.GameScreen.route)
                     })
             }

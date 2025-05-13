@@ -53,7 +53,7 @@ private const val TAG = "StageSelector"
 fun StageSelectorScreen(
     modifier: Modifier,
     backClick: () -> Unit,
-    selectStageClick: () -> Unit,
+    selectStageClick: (stageName: String) -> Unit,
 ) {
     val vm = koinViewModel<StageSelectorViewModel>()
     val state = vm.levelsStateFlow.collectAsState()
@@ -89,7 +89,7 @@ fun ShowStages(
     stagesData: List<StagesData>,
     modifier: Modifier = Modifier,
     backClick: () -> Unit,
-    selectStageClick: () -> Unit,
+    selectStageClick: (stageName: String) -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -150,7 +150,7 @@ fun BackButton(
 @Composable
 fun StagesList(
     stagesList: List<StagesData>,
-    stageClick: () -> Unit,
+    stageClick: (stageName: String) -> Unit,
 ) {
     LazyColumn {
         items(stagesList) { stage ->
@@ -169,7 +169,7 @@ fun StagesRow(
     modifier: Modifier = Modifier,
     stageHeader: String,
     stageItems: List<StagesData.StageData> = listOf(),
-    stageClick: () -> Unit,
+    stageClick: (stageName: String) -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -184,10 +184,11 @@ fun StagesRow(
         ) {
             repeat(stageItems.size) { index ->
                 StageItem(
-                    index.toString(),
-                    stageItems[index].isCleared,
-                    modifier.padding(vertical = 4.dp),
-                    stageClick
+                    stageName = stageItems[index].stageName,
+                    stageIndex = index.toString(),
+                    isCleared = stageItems[index].isCleared,
+                    modifier =  modifier.padding(vertical = 4.dp),
+                    stageClick = stageClick
                 )
             }
         }
@@ -223,9 +224,10 @@ private fun CategoryHeader(
 @Composable
 fun StageItem(
     stageName: String,
+    stageIndex: String,
     isCleared: Boolean,
     modifier: Modifier,
-    stageClick: () -> Unit,
+    stageClick: (stageName: String) -> Unit,
 ) {
     Box(
         contentAlignment = Alignment.Center,
@@ -242,10 +244,10 @@ fun StageItem(
                 shape = RoundedCornerShape(percent = 30)
             )
             .clickable {
-                stageClick()
+                stageClick(stageName)
             }
     ) {
-        Text(text = stageName, color = colorResource(R.color.purple_200))
+        Text(text = stageIndex, color = colorResource(R.color.purple_200))
     }
 }
 
@@ -274,7 +276,8 @@ fun ShowStagesListPreview() {
 fun StageItemPreview() {
     StageItem(
         modifier = Modifier,
-        stageName = "1",
+        stageName = "some name",
+        stageIndex = "1",
         isCleared = false,
         stageClick = {})
 }
@@ -284,7 +287,8 @@ fun StageItemPreview() {
 fun StageItemPreviewCleared() {
     StageItem(
         modifier = Modifier,
-        stageName = "2",
+        stageName = "some name 2",
+        stageIndex = "2",
         isCleared = true,
         stageClick = {})
 }
