@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.colors.collorpuzzle.R
 import com.colors.collorpuzzle.ui.screens.loader.ShowLoader
+import com.colors.collorpuzzle.ui.screens.stage_selector.StageSelectionIntent
 import com.colors.collorpuzzle.ui.screens.stage_selector.view_model.StageSelectorViewModel
 import com.colors.collorpuzzle.ui.screens.stage_selector.view_model.StagesData
 import org.koin.compose.viewmodel.koinViewModel
@@ -57,7 +58,7 @@ fun StageSelectorScreen(
     val vm = koinViewModel<StageSelectorViewModel>()
     val state = vm.levelsStateFlow.collectAsState()
 
-    LaunchedEffect(vm) {
+    LaunchedEffect(Unit) {
         vm.handleIntent(StageSelectionIntent.FetchStages)
     }
 

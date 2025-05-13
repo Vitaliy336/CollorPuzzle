@@ -1,13 +1,12 @@
 package com.colors.collorpuzzle.ui.screens.stage_selector.view_model
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.colors.collorpuzzle.data.local.PuzzleDataStore
 import com.colors.collorpuzzle.data.repo.RemoteConfigRepo
 import com.colors.collorpuzzle.data.repo.RemoteConfigRepoImpl
-import kotlinx.coroutines.delay
 import com.colors.collorpuzzle.ui.screens.stage_selector.StageSelectionIntent
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -59,7 +58,7 @@ class StageSelectorViewModel(
                     is RemoteConfigRepoImpl.ConfigState.Loading -> {
                         _levelsFlow.value =
                             LevelsState.Loading
-                        delay(4000) // just to simulate loading
+                        delay(3000) // just to simulate loading
                     }
 
                     is RemoteConfigRepoImpl.ConfigState.Success -> _levelsFlow.value =

@@ -21,7 +21,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun LinearDeterminateIndicator(isFinished: () -> Unit) {
     var currentProgress = remember { mutableFloatStateOf(0f) }
-    var loading = remember { mutableStateOf(true) }
     val scope = rememberCoroutineScope()
 
     Column(
@@ -37,20 +36,17 @@ fun LinearDeterminateIndicator(isFinished: () -> Unit) {
                 loadProgress { progress ->
                     currentProgress.floatValue = progress
                 }
-                loading.value = false // Reset loading when the coroutine finishes
                 isFinished()
             }
         }
     }
 
-    if (loading.value) {
-        LinearProgressIndicator(
-            progress = currentProgress.floatValue,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(12.dp),
-        )
-    }
+    LinearProgressIndicator(
+        progress = currentProgress.floatValue,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(12.dp),
+    )
 }
 
 
