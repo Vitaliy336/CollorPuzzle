@@ -171,3 +171,12 @@ fun ColorsPalettePreview() {
         selectedColor = 0xFF0000FF,
         clickListener = {})
 }
+@Preview(device = Devices.PIXEL_4_XL)
+@Composable
+fun ColorsPalettePreviewUnselected() {
+    val mockedPalette = listOf(0xFF0000FF, 0xFFFFFF00, 0xFFFF0000, 0xFF00FF00)
+    ColorsPalette(modifier = Modifier,
+        colors = mockedPalette,
+        selectedColor = 0,
+        clickListener = {})
+}

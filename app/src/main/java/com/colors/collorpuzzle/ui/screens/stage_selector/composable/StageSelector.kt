@@ -40,11 +40,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.colors.collorpuzzle.R
+import com.colors.collorpuzzle.ui.screens.loader.ShowLoader
 import com.colors.collorpuzzle.ui.screens.stage_selector.view_model.StageSelectorViewModel
 import com.colors.collorpuzzle.ui.screens.stage_selector.view_model.StagesData
 import org.koin.compose.viewmodel.koinViewModel
 
 private const val TAG = "StageSelector"
+
 @Composable
 fun StageSelectorScreen(
     modifier: Modifier,
@@ -53,15 +55,17 @@ fun StageSelectorScreen(
 ) {
     val vm = koinViewModel<StageSelectorViewModel>()
     val state = vm.levelsStateFlow.collectAsState()
-    vm.test()
+    vm.fetchLevelsData()
     Surface {
         when (state.value) {
             is StageSelectorViewModel.LevelsState.Loading -> {
-                Log.d(TAG, "StageSelectorScreen: ")
+                ShowLoader(isFinished = {})
             }
+
             is StageSelectorViewModel.LevelsState.Error -> {
                 Log.d(TAG, "StageSelectorScreen: ")
             }
+
             is StageSelectorViewModel.LevelsState.Success -> {
                 ShowStages(
                     stagesData = (state.value as StageSelectorViewModel.LevelsState.Success).data,
