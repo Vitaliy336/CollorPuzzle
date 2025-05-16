@@ -10,7 +10,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -20,6 +20,7 @@ import com.colors.collorpuzzle.ui.screens.stage_selector.composable.StageSelecto
 import com.colors.collorpuzzle.ui.theme.ColorPuzzleTheme
 
 private const val TAG = "MainActivity"
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,12 +40,12 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun NavigationComponent() {
         val navController = rememberNavController()
-        NavHost(navController = navController, startDestination = PuzzleNavigation.MainMenu.route) {
-            composable(route = PuzzleNavigation.MainMenu.route) {
+        NavHost(navController = navController, startDestination = MainMenu.route) {
+            composable(route = MainMenu.route) {
                 ShowMainMenu(
                     Modifier.fillMaxSize(),
                     playClicked = {
-                        navController.navigate(PuzzleNavigation.StageSelector.route)
+                        navController.navigate(StageSelector.route)
                     },
                     randomStageClicked = {
                         // TODO:
@@ -53,29 +54,32 @@ class MainActivity : ComponentActivity() {
                         // TODO:
                     })
             }
-            composable(route = PuzzleNavigation.GameScreen.route) {
-                StageScreen(modifier = Modifier)
+            composable(
+                route = GameScreen.routeWithArgs,
+                arguments = GameScreen.arguments
+            ) { nav ->
+                val stageName = nav.arguments?.getString(GameScreen.stageName) ?: ""
+                StageScreen(modifier = Modifier, stageName)
             }
 
-            composable(route = PuzzleNavigation.StageSelector.route) {
+            composable(route = StageSelector.route) {
                 StageSelectorScreen(
                     modifier = Modifier,
                     backClick = {
                         navController.navigateUp()
                     },
                     selectStageClick = { name ->
-                        Log.d(TAG, "NavigationComponent: selected stage name = $name", )
-                        navController.navigate(PuzzleNavigation.GameScreen.route)
+                        Log.d(TAG, "NavigationComponent: selected stage name = $name")
+                        navController.navigateToSelectedStage(name)
                     })
             }
         }
     }
 
-    @Preview(showBackground = true)
-    @Composable
-    fun GreetingPreview() {
-        ColorPuzzleTheme {
-            StageScreen(Modifier)
+
+    private fun NavHostController.navigateToSelectedStage(stageName: String) {
+        this.navigate("${GameScreen.route}/${stageName}") {
+            launchSingleTop = true
         }
     }
 }

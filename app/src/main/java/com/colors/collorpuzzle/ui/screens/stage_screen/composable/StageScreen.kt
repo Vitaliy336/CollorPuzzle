@@ -1,5 +1,6 @@
 package com.colors.collorpuzzle.ui.screens.stage_screen.composable
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -38,6 +39,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.colors.collorpuzzle.R
 import com.colors.collorpuzzle.ui.screens.CellType
 import com.colors.collorpuzzle.ui.screens.stage_screen.stage_viewModel.Matrix
@@ -54,7 +56,7 @@ val temp_matrix: Matrix = arrayOf(
 )
 
 @Composable
-fun StageScreen(modifier: Modifier) {
+fun StageScreen(modifier: Modifier, stageName: String) {
 
     val context = LocalContext.current
     var attemptsCount by remember { mutableIntStateOf(7) }
@@ -62,6 +64,8 @@ fun StageScreen(modifier: Modifier) {
     var selectedColor by remember {
         mutableStateOf(-1L)
     }
+
+    Log.d("!", "StageScreen: name = $stageName ")
 
     Row(
         modifier = modifier
@@ -199,5 +203,5 @@ fun PalettePuzzleScreen(modifier: Modifier, cellType: CellType, cellClick: () ->
 )
 @Composable
 fun StageScreenPreview() {
-    StageScreen(Modifier)
+    StageScreen(Modifier, "Some name")
 }
