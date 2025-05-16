@@ -39,7 +39,6 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
 import com.colors.collorpuzzle.R
 import com.colors.collorpuzzle.ui.screens.CellType
 import com.colors.collorpuzzle.ui.screens.stage_screen.stage_viewModel.Matrix
