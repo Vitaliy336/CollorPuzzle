@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,7 +28,7 @@ fun BuildStageMatrix(
     containerWidth: Dp,
     containerHeight: Dp,
     stageMatrix: Matrix,
-    cellClick: () -> Unit,
+    cellClick: (x: Int, y: Int, color: Int) -> Unit,
 ) {
 
     val cellWidth: Dp = containerWidth / 12
@@ -63,7 +64,7 @@ fun MatrixItemBox(
     posX: Int,
     posY: Int,
     cellType: CellType,
-    itemClick: () -> Unit,
+    itemClick: (x: Int, y: Int, color: Int) -> Unit,
 ) {
     val context = LocalContext.current
 
@@ -78,9 +79,11 @@ fun MatrixItemBox(
                 Toast
                     .makeText(context, "x-> $posX, y -> $posY", Toast.LENGTH_SHORT)
                     .show()
-                itemClick()
+                itemClick(posX, posY, cellType.color)
             }
-    )
+    ) {
+        Text(text = "$posX,$posY")
+    }
 }
 
 
@@ -107,6 +110,6 @@ fun BuildStageMatrixPreview() {
             intArrayOf(1, 2, 3, 1, 4, 1, 3, 4, 1, 2),
             intArrayOf(1, 2, 3, 1, 4, 1, 3, 4, 1, 2),
             intArrayOf(1, 2, 3, 1, 4, 1, 3, 4, 1, 2),
-        ), cellClick = {}
+        ), cellClick = { x, y, color -> }
     )
 }

@@ -1,6 +1,6 @@
 package com.colors.collorpuzzle.ui.screens.stage_screen.stage_viewModel
 
-import com.colors.collorpuzzle.ui.screens.CellType
+import android.util.Log
 
 
 typealias Matrix = Array<IntArray>
@@ -13,45 +13,63 @@ class PaletteAlgorithm {
             grid: Matrix,
             posX: Int,
             posY: Int,
+            oldColor: Int,
             newColorValue: Int,
-        ) {
-            floodHelper(
+        ): Matrix {
+            showGrid(grid)
+            Log.e("!TAG", "floodFill: ", )
+            helper(
                 grid = grid,
-                posX = posX,
-                posY = posY,
-                newColorValue = newColorValue,
-                colorValue = grid[posY][posY],
+                sRow = posX,
+                sCell = posY,
+                newColor = newColorValue,
+                color = oldColor,
                 visitedBranches = hashSetOf()
             )
+
+            showGrid(grid)
+            return grid
         }
 
-        private fun floodHelper(
-            grid: Matrix,
-            posX: Int,
-            posY: Int,
-            newColorValue: Int,
-            colorValue: Int,
+        private fun helper(
+            grid: Array<IntArray>,
+            sRow: Int,
+            sCell: Int,
+            newColor: Int,
+            color: Int,
             visitedBranches: HashSet<String>,
         ) {
-            val rowInbounds = posX >= 0 && posX < grid.size
-            val cellInbound = posY >= 0 && posY < grid[0].size
-            val cellName = "$posX,$posY"
+            val rowInbounds: Boolean = sRow >= 0 && sRow < grid[0].size
+            val cellInbounds: Boolean = sCell >= 0 && sCell < grid.size
+            val cellName = "$sRow,$sCell"
 
             when {
-                !rowInbounds || cellInbound -> return
+                !rowInbounds || !cellInbounds -> return
                 visitedBranches.contains(cellName) -> return
-                grid[posX][posY] != colorValue -> return
-                grid[posX][posY] != CellType.BARRIER_CELL.color -> return // TODO: DOUBLE CHECK BARRIERS HANDLING
+                grid[sCell][sRow] != color -> return
                 else -> {
                     visitedBranches.add(cellName)
-                    grid[posX][posY] = newColorValue
-                    floodHelper(grid, posX + 1, posY, newColorValue, colorValue, visitedBranches)
-                    floodHelper(grid, posX - 1, posY, newColorValue, colorValue, visitedBranches)
-                    floodHelper(grid, posX, posY + 1, newColorValue, colorValue, visitedBranches)
-                    floodHelper(grid, posX, posY - 1, newColorValue, colorValue, visitedBranches)
+                    grid[sCell][sRow] = newColor
+                    helper(grid, sRow + 1, sCell, newColor, color, visitedBranches)
+                    helper(grid, sRow - 1, sCell, newColor, color, visitedBranches)
+                    helper(grid, sRow, sCell + 1, newColor, color, visitedBranches)
+                    helper(grid, sRow, sCell - 1, newColor, color, visitedBranches)
                 }
             }
         }
+
+        fun showGrid(grid: Array<IntArray>) {
+            grid.forEach {
+                print("[")
+                it.forEach {
+                    print("$it, ")
+                }
+                print("]")
+                println()
+            }
+        }
+
+
     }
 
 }

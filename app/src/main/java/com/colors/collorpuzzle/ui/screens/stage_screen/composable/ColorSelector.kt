@@ -39,17 +39,16 @@ import androidx.compose.ui.unit.dp
 import androidx.graphics.shapes.CornerRounding
 import androidx.graphics.shapes.RoundedPolygon
 import androidx.graphics.shapes.toPath
+import com.colors.collorpuzzle.ui.screens.CellType
 import kotlinx.coroutines.delay
 
 @Composable
 fun ColorsPalette(
     modifier: Modifier = Modifier,
-    colors: List<Long> = listOf(0xFF0000FF, 0xFFFFFF00, 0xFFFF0000, 0xFF00FF00),
-    selectedColor: Long,
-    clickListener: (Long) -> Unit,
+    colors: List<CellType> = CellType.getPaletteColors(),
+    selectedColor: Int,
+    clickListener: (Int) -> Unit,
 ) {
-
-
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -75,7 +74,7 @@ fun ColorsPalette(
         for (color in colors) {
             ColorSelector(
                 modifier = modifier,
-                color = color,
+                cellType = color,
                 selectedColor = selectedColor,
                 clickListener = clickListener
             )
@@ -97,28 +96,31 @@ fun ColorsPalette(
 @Composable
 fun ColorSelector(
     modifier: Modifier,
-    color: Long,
-    selectedColor: Long,
-    clickListener: (Long) -> Unit,
+    cellType: CellType,
+    selectedColor: Int,
+    clickListener: (Int) -> Unit,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start,
         modifier = modifier.fillMaxWidth()
     ) {
-        val isSelected = color == selectedColor
+        val isSelected = cellType.color == selectedColor
 
-        Box(modifier = modifier
-            .padding(start = 8.dp, top = 8.dp, end = 4.dp, bottom = 8.dp)
-            .size(56.dp)
-            .border(
-                2.dp, if (isSelected) Color.White
-                else Color.Transparent, CircleShape
-            )
-            .padding(1.dp)
-            .clip(CircleShape)
-            .background(color = Color(color))
-            .clickable { clickListener(color) })
+        Box(
+            modifier = modifier
+                .padding(start = 8.dp, top = 8.dp, end = 4.dp, bottom = 8.dp)
+                .size(56.dp)
+                .border(
+                    2.dp, if (isSelected) Color.White
+                    else Color.Transparent, CircleShape
+                )
+                .padding(1.dp)
+                .clip(CircleShape)
+                .background(color = cellType.colorValue)
+                .clickable {
+                    clickListener(cellType.color)
+                })
 
         if (isSelected) {
             var expanded by remember { mutableStateOf(false) }
@@ -133,31 +135,32 @@ fun ColorSelector(
                 expanded = true
             }
 
-            Box(modifier = modifier
-                .height(12.dp)
-                .offset(offsetX.value)
-                .width(12.dp)
-                .drawWithCache {
-                    val polygon = RoundedPolygon(
-                        numVertices = 3,
-                        radius = size.minDimension / 2,
-                        centerX = size.width / 2,
-                        centerY = size.height / 2,
-                        rounding = CornerRounding(
-                            size.minDimension / 10f, smoothing = 0.1f
-                        )
-                    )
-                    val roundedPolygonPath = polygon
-                        .toPath()
-                        .asComposePath()
-                    onDrawBehind {
-                        rotate(degrees = 180F) {
-                            drawPath(
-                                roundedPolygonPath, color = Color.White
+            Box(
+                modifier = modifier
+                    .height(12.dp)
+                    .offset(offsetX.value)
+                    .width(12.dp)
+                    .drawWithCache {
+                        val polygon = RoundedPolygon(
+                            numVertices = 3,
+                            radius = size.minDimension / 2,
+                            centerX = size.width / 2,
+                            centerY = size.height / 2,
+                            rounding = CornerRounding(
+                                size.minDimension / 10f, smoothing = 0.1f
                             )
+                        )
+                        val roundedPolygonPath = polygon
+                            .toPath()
+                            .asComposePath()
+                        onDrawBehind {
+                            rotate(degrees = 180F) {
+                                drawPath(
+                                    roundedPolygonPath, color = Color.White
+                                )
+                            }
                         }
-                    }
-                })
+                    })
         }
     }
 }
@@ -165,17 +168,20 @@ fun ColorSelector(
 @Preview(device = Devices.PIXEL_4_XL)
 @Composable
 fun ColorsPalettePreview() {
-    val mockedPalette = listOf(0xFF0000FF, 0xFFFFFF00, 0xFFFF0000, 0xFF00FF00)
-    ColorsPalette(modifier = Modifier,
+    val mockedPalette = CellType.getPaletteColors()
+    ColorsPalette(
+        modifier = Modifier,
         colors = mockedPalette,
-        selectedColor = 0xFF0000FF,
+        selectedColor = 2,
         clickListener = {})
 }
+
 @Preview(device = Devices.PIXEL_4_XL)
 @Composable
 fun ColorsPalettePreviewUnselected() {
-    val mockedPalette = listOf(0xFF0000FF, 0xFFFFFF00, 0xFFFF0000, 0xFF00FF00)
-    ColorsPalette(modifier = Modifier,
+    val mockedPalette = CellType.getPaletteColors()
+    ColorsPalette(
+        modifier = Modifier,
         colors = mockedPalette,
         selectedColor = 0,
         clickListener = {})

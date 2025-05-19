@@ -1,7 +1,5 @@
 package com.colors.collorpuzzle.ui.screens.stage_screen.composable
 
-import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -22,9 +20,10 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -32,7 +31,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -42,30 +40,55 @@ import androidx.compose.ui.unit.dp
 import com.colors.collorpuzzle.R
 import com.colors.collorpuzzle.ui.screens.CellType
 import com.colors.collorpuzzle.ui.screens.stage_screen.stage_viewModel.Matrix
-
-val temp_matrix: Matrix = arrayOf(
-    intArrayOf(1, 2, 3, 1, 4, 1, 3, 4, 1, 2),
-    intArrayOf(1, 2, 3, 1, 4, 1, 3, 4, 1, 2),
-    intArrayOf(1, 2, 3, 1, 4, 1, 3, 4, 1, 2),
-    intArrayOf(1, 2, 3, 1, 4, 1, 3, 4, 1, 2),
-    intArrayOf(1, 2, 3, 1, 4, 1, 3, 4, 1, 2),
-    intArrayOf(1, 2, 3, 1, 4, 1, 3, 4, 1, 2),
-    intArrayOf(1, 2, 3, 1, 4, 1, 3, 4, 1, 2),
-    intArrayOf(1, 2, 3, 1, 4, 1, 3, 4, 1, 2),
-)
+import com.colors.collorpuzzle.ui.screens.stage_screen.stage_viewModel.StageIntent
+import com.colors.collorpuzzle.ui.screens.stage_screen.stage_viewModel.StageViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun StageScreen(modifier: Modifier, stageName: String) {
+    val vm = koinViewModel<StageViewModel>()
+    vm.handleIntent(StageIntent.InitStage(stageName))
 
-    val context = LocalContext.current
-    var attemptsCount by remember { mutableIntStateOf(7) }
+    val matrix = vm.paletteFlow.collectAsState()
+    val attemptsCount = vm.paintAttemptsFlow.collectAsState()
+
+    val stageScreenState = vm.gameScreenFlow.collectAsState()
+    when (stageScreenState.value) {
+        StageViewModel.GameScreenState.Error -> TODO()
+        StageViewModel.GameScreenState.Loading -> TODO()
+        is StageViewModel.GameScreenState.Ready -> {
+            val colorToPaint =
+                (stageScreenState.value as StageViewModel.GameScreenState.Ready).colorToPaint
+            ShowStageScreen(
+                modifier = modifier,
+                colorToPaint = colorToPaint,
+                matrix = matrix.value,
+                attemptsCount = attemptsCount,
+                restartClick = { vm.handleIntent(StageIntent.RestartStage) },
+                cellClick = { x, y, color ->
+                    vm.handleIntent(StageIntent.PaletteCLicked(x, y, color))
+                }
+            )
+        }
+
+        StageViewModel.GameScreenState.Lost -> TODO()
+        StageViewModel.GameScreenState.StageCleared -> TODO()
+    }
+}
+
+@Composable
+fun ShowStageScreen(
+    modifier: Modifier = Modifier,
+    colorToPaint: Int,
+    cellClick: (x: Int, y: Int, color: Int) -> Unit,
+    restartClick: () -> Unit,
+    matrix: StageViewModel.PaletteState,
+    attemptsCount: State<Int>,
+) {
 
     var selectedColor by remember {
-        mutableStateOf(-1L)
+        mutableIntStateOf(0)
     }
-
-    Log.d("!", "StageScreen: name = $stageName ")
-
     Row(
         modifier = modifier
             .fillMaxSize()
@@ -89,7 +112,7 @@ fun StageScreen(modifier: Modifier, stageName: String) {
                     .weight(50f)
             ) {
                 Text(text = "Remaining moves")
-                Text(text = "$attemptsCount")
+                Text(text = "${attemptsCount.value}")
             }
             Column(
                 verticalArrangement = Arrangement.Bottom,
@@ -110,7 +133,7 @@ fun StageScreen(modifier: Modifier, stageName: String) {
                         .clip(shape = CircleShape)
                         .background(color = Color.White)
                         .clickable {
-                            attemptsCount = 7
+                            restartClick()
                         }
                 )
                 Text(text = "Restart")
@@ -125,8 +148,10 @@ fun StageScreen(modifier: Modifier, stageName: String) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             PalettePuzzleScreen(
-                modifier, cellType = CellType.GREEN_CELL, cellClick = {
-                    attemptsCount -= 1
+                modifier, cellType = getCellColor(colorToPaint),
+                matrix.matrix,
+                cellClick = { x, y, color ->
+                    cellClick(x, y, color)
                 }
             )
         }
@@ -140,7 +165,6 @@ fun StageScreen(modifier: Modifier, stageName: String) {
                 modifier = Modifier,
                 selectedColor = selectedColor,
                 clickListener = { color ->
-                    Toast.makeText(context, "$color", Toast.LENGTH_SHORT).show()
                     selectedColor = color
                 })
         }
@@ -148,7 +172,12 @@ fun StageScreen(modifier: Modifier, stageName: String) {
 }
 
 @Composable
-fun PalettePuzzleScreen(modifier: Modifier, cellType: CellType, cellClick: () -> Unit) {
+fun PalettePuzzleScreen(
+    modifier: Modifier,
+    cellType: CellType,
+    matrix: Matrix,
+    cellClick: (x: Int, y: Int, color: Int) -> Unit,
+) {
     Column(modifier = modifier) {
         Row(
             horizontalArrangement = Arrangement.Center,
@@ -188,7 +217,7 @@ fun PalettePuzzleScreen(modifier: Modifier, cellType: CellType, cellClick: () ->
                 modifier = modifier,
                 boxWithConstraintsScope.maxWidth,
                 boxWithConstraintsScope.minHeight,
-                temp_matrix,
+                matrix,
                 cellClick = cellClick
             )
         }
@@ -202,5 +231,20 @@ fun PalettePuzzleScreen(modifier: Modifier, cellType: CellType, cellClick: () ->
 )
 @Composable
 fun StageScreenPreview() {
-    StageScreen(Modifier, "Some name")
+    val temp_matrix: Matrix = arrayOf(
+        intArrayOf(1, 2, 3, 1, 4, 1, 3, 4, 1, 2),
+        intArrayOf(1, 2, 3, 1, 4, 1, 3, 4, 1, 2),
+        intArrayOf(1, 2, 3, 1, 4, 1, 3, 4, 1, 2),
+        intArrayOf(1, 2, 3, 1, 4, 1, 3, 4, 1, 2),
+        intArrayOf(1, 2, 3, 1, 4, 1, 3, 4, 1, 2),
+        intArrayOf(1, 2, 3, 1, 4, 1, 3, 4, 1, 2),
+        intArrayOf(1, 2, 3, 1, 4, 1, 3, 4, 1, 2),
+        intArrayOf(1, 2, 3, 1, 4, 1, 3, 4, 1, 2),
+    )
+
+    PalettePuzzleScreen(
+        modifier = Modifier,
+        cellType = CellType.BLUE_CELL,
+        matrix = temp_matrix,
+        cellClick = { x, y, color -> })
 }
