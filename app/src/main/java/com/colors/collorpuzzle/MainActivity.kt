@@ -10,7 +10,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -60,7 +59,10 @@ class MainActivity : ComponentActivity() {
                 arguments = GameScreen.arguments
             ) { nav ->
                 val stageName = nav.arguments?.getString(GameScreen.stageName) ?: ""
-                StageScreen(modifier = Modifier, stageName)
+                StageScreen(modifier = Modifier, stageName,
+                    backClick = {
+                        navController.navigateUp()
+                    })
             }
 
             composable(route = StageSelector.route) {

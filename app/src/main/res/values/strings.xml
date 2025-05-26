@@ -5,4 +5,11 @@
     <string name="constructor_mode">Stage constructor</string>
     <string name="random_mode">Random mode</string>
     <string name="stage_select">Select Stage</string>
+    <string name="restart_btn_text">Restart</string>
+    <string name="attempts_counter">Remaining moves:</string>
+    <string name="turn_all_into">Turn all the blocks into:\u0020 </string>
+    <string name="dialog_btn_to_menu">To Menu</string>
+    <string name="dialog_btn_restart">Restart</string>
+    <string name="dialog_stage_cleared_msg">Stage Cleared</string>
+    <string name="dialog_stage_failed_msg">No attempts left</string>
 </resources>

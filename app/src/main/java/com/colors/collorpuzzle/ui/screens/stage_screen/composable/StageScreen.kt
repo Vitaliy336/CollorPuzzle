@@ -1,10 +1,9 @@
 package com.colors.collorpuzzle.ui.screens.stage_screen.composable
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,26 +16,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.colors.collorpuzzle.R
 import com.colors.collorpuzzle.ui.screens.CellType
 import com.colors.collorpuzzle.ui.screens.stage_screen.stage_viewModel.Matrix
@@ -45,101 +36,124 @@ import com.colors.collorpuzzle.ui.screens.stage_screen.stage_viewModel.StageView
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun StageScreen(modifier: Modifier, stageName: String) {
-    val vm = koinViewModel<StageViewModel>()
-    vm.handleIntent(StageIntent.InitStage(stageName))
+fun StageScreen(
+    modifier: Modifier, stageName: String,
+    backClick: () -> Unit,
+    vm: StageViewModel = koinViewModel<StageViewModel>(),
+) {
+    LaunchedEffect(key1 = Unit) {
+        vm.handleIntent(StageIntent.InitStage(stageName))
+    }
+    val showDialog = rememberSaveable { mutableStateOf(true) }
 
-    val matrix = vm.paletteFlow.collectAsState()
-    val attemptsCount = vm.paintAttemptsFlow.collectAsState()
+    val stageScreenState = vm.gameScreenFlow.collectAsStateWithLifecycle()
+    val selectedColor = vm.selectedColorState.collectAsStateWithLifecycle()
 
-    val stageScreenState = vm.gameScreenFlow.collectAsState()
     when (stageScreenState.value) {
         StageViewModel.GameScreenState.Error -> TODO()
-        StageViewModel.GameScreenState.Loading -> TODO()
-        is StageViewModel.GameScreenState.Ready -> {
-            val colorToPaint =
-                (stageScreenState.value as StageViewModel.GameScreenState.Ready).colorToPaint
+        StageViewModel.GameScreenState.Loading -> Loading()
+        is StageViewModel.GameScreenState.UpdateGameScreen -> {
+
+            val stageValue =
+                (stageScreenState.value as StageViewModel.GameScreenState.UpdateGameScreen)
+
             ShowStageScreen(
                 modifier = modifier,
-                colorToPaint = colorToPaint,
-                matrix = matrix.value,
-                attemptsCount = attemptsCount,
-                restartClick = { vm.handleIntent(StageIntent.RestartStage) },
+                colorToPaint = stageValue.colorToPaint,
+                matrix = stageValue.matrix,
+                attemptsCount = stageValue.attemptsLeft,
+                restartClick = {
+                    vm.handleIntent(StageIntent.RestartStage)
+                },
                 cellClick = { x, y, color ->
                     vm.handleIntent(StageIntent.PaletteCLicked(x, y, color))
-                }
+                },
+                selectedColor = selectedColor.value,
+                selectColorClick = { color ->
+                    vm.handleIntent(StageIntent.ColorSelect(color))
+                },
+                backClick = backClick
             )
-        }
 
-        StageViewModel.GameScreenState.Lost -> TODO()
-        StageViewModel.GameScreenState.StageCleared -> TODO()
+            if (stageValue.isRunOfAttempts || stageValue.isCleared) {
+                if (showDialog.value) {
+                    showDialog.value = false
+                }
+            }
+        }
     }
+}
+
+@Composable
+fun Loading() {
+
+}
+
+@Composable
+fun ShowDialog(
+    isStageCleared: Boolean,
+    confirmClick: () -> Unit,
+    dismissClick: () -> Unit,
+) {
+    PuzzleDialog(
+        dialogTitle = if (isStageCleared) stringResource(R.string.dialog_stage_cleared_msg) else
+            stringResource(R.string.dialog_stage_failed_msg),
+        isSingleButtonDialog = isStageCleared,
+        confirmRequest = confirmClick,
+        dismissRequest = dismissClick,
+        confirmBtnText = stringResource(R.string.dialog_btn_to_menu),
+        dismissBtnText = if (isStageCleared) "" else stringResource(R.string.dialog_btn_restart)
+    )
 }
 
 @Composable
 fun ShowStageScreen(
     modifier: Modifier = Modifier,
+    matrix: Matrix,
     colorToPaint: Int,
+    attemptsCount: Int,
+    selectedColor: Int,
     cellClick: (x: Int, y: Int, color: Int) -> Unit,
+    backClick: () -> Unit,
     restartClick: () -> Unit,
-    matrix: StageViewModel.PaletteState,
-    attemptsCount: State<Int>,
+    selectColorClick: (color: Int) -> Unit,
 ) {
-
-    var selectedColor by remember {
-        mutableIntStateOf(0)
-    }
     Row(
         modifier = modifier
             .fillMaxSize()
             .windowInsetsPadding(WindowInsets.safeDrawing),
-        horizontalArrangement = Arrangement.Center,
+        horizontalArrangement = Arrangement.SpaceAround,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Column(
+        // LEFT COMPONENT
+        Box(
             modifier = modifier
                 .fillMaxHeight()
-                .weight(15f),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+                .weight(15f)
         ) {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
+            BackButton(
+                backClick = backClick,
                 modifier = modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-                    .weight(50f)
-            ) {
-                Text(text = "Remaining moves")
-                Text(text = "${attemptsCount.value}")
-            }
-            Column(
-                verticalArrangement = Arrangement.Bottom,
-                horizontalAlignment = Alignment.CenterHorizontally,
+                    .padding(start = 16.dp, top = 20.dp)
+                    .align(Alignment.TopStart)
+            )
+
+            MovesLeftComponent(
+                attempts = attemptsCount,
                 modifier = modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp)
-                    .weight(50f)
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.ic_restart),
-                    contentDescription = "restart",
-                    contentScale = ContentScale.Crop,
-                    modifier = modifier
-                        .padding(16.dp)
-                        .size(56.dp)
-                        .border(2.dp, color = Color.Gray, shape = CircleShape)
-                        .clip(shape = CircleShape)
-                        .background(color = Color.White)
-                        .clickable {
-                            restartClick()
-                        }
-                )
-                Text(text = "Restart")
-            }
+                    .align(Alignment.Center)
+                    .padding(bottom = 20.dp)
+            )
+
+            RestartComposable(
+                modifier = modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 20.dp),
+                restartClick = restartClick
+            )
         }
 
+        // MID COMPONENT
         Column(
             modifier = modifier
                 .fillMaxHeight()
@@ -149,12 +163,14 @@ fun ShowStageScreen(
         ) {
             PalettePuzzleScreen(
                 modifier, cellType = getCellColor(colorToPaint),
-                matrix.matrix,
+                matrix,
                 cellClick = { x, y, color ->
                     cellClick(x, y, color)
                 }
             )
         }
+
+        // RIGHT COMPONENT
         Column(
             modifier = modifier
                 .fillMaxHeight()
@@ -165,7 +181,7 @@ fun ShowStageScreen(
                 modifier = Modifier,
                 selectedColor = selectedColor,
                 clickListener = { color ->
-                    selectedColor = color
+                    selectColorClick(color)
                 })
         }
     }
@@ -185,20 +201,7 @@ fun PalettePuzzleScreen(
                 .weight(8f)
                 .fillMaxWidth()
         ) {
-            Text(
-                modifier = Modifier.padding(
-                    start = 16.dp,
-                    end = 16.dp, top = 20.dp, bottom = 0.dp,
-                ),
-                text = buildAnnotatedString {
-                    withStyle(style = SpanStyle(color = Color.Gray)) {
-                        append("Turn all the blocks into ")
-                    }
-                    withStyle(style = SpanStyle(color = cellType.colorValue)) {
-                        append(cellType.colorName)
-                    }
-                }
-            )
+            ColorToComposable(cellType = cellType, modifier = modifier)
         }
 
         BoxWithConstraints(
@@ -224,6 +227,23 @@ fun PalettePuzzleScreen(
     }
 }
 
+@Composable
+fun BackButton(
+    backClick: () -> Unit,
+    modifier: Modifier,
+) {
+    Image(
+        painter = painterResource(id = R.drawable.close),
+        contentDescription = "back",
+        contentScale = ContentScale.FillBounds,
+        modifier = modifier
+            .size(32.dp)
+            .clickable {
+                backClick.invoke()
+            }
+    )
+}
+
 @Preview(
     name = "Landscape Mode",
     showBackground = true,
@@ -231,20 +251,24 @@ fun PalettePuzzleScreen(
 )
 @Composable
 fun StageScreenPreview() {
-    val temp_matrix: Matrix = arrayOf(
-        intArrayOf(1, 2, 3, 1, 4, 1, 3, 4, 1, 2),
-        intArrayOf(1, 2, 3, 1, 4, 1, 3, 4, 1, 2),
-        intArrayOf(1, 2, 3, 1, 4, 1, 3, 4, 1, 2),
-        intArrayOf(1, 2, 3, 1, 4, 1, 3, 4, 1, 2),
-        intArrayOf(1, 2, 3, 1, 4, 1, 3, 4, 1, 2),
-        intArrayOf(1, 2, 3, 1, 4, 1, 3, 4, 1, 2),
-        intArrayOf(1, 2, 3, 1, 4, 1, 3, 4, 1, 2),
-        intArrayOf(1, 2, 3, 1, 4, 1, 3, 4, 1, 2),
-    )
-
-    PalettePuzzleScreen(
+    ShowStageScreen(
         modifier = Modifier,
-        cellType = CellType.BLUE_CELL,
-        matrix = temp_matrix,
-        cellClick = { x, y, color -> })
+        restartClick = {},
+        cellClick = { x, y, color -> },
+        colorToPaint = CellType.GREEN_CELL.color,
+        attemptsCount = 3,
+        selectColorClick = {},
+        selectedColor = 0,
+        backClick = {},
+        matrix = arrayOf(
+            intArrayOf(1, 2, 3, 1, 4, 1, 3, 4, 1, 2),
+            intArrayOf(1, 2, 3, 1, 4, 1, 3, 4, 1, 2),
+            intArrayOf(1, 2, 3, 1, 4, 1, 3, 4, 1, 2),
+            intArrayOf(1, 2, 3, 1, 4, 1, 3, 4, 1, 2),
+            intArrayOf(1, 2, 3, 1, 4, 1, 3, 4, 1, 2),
+            intArrayOf(1, 2, 3, 1, 4, 1, 3, 4, 1, 2),
+            intArrayOf(1, 2, 3, 1, 4, 1, 3, 4, 1, 2),
+            intArrayOf(1, 2, 3, 1, 4, 1, 3, 4, 1, 2),
+        )
+    )
 }

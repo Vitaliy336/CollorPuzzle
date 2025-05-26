@@ -1,12 +1,11 @@
 package com.colors.collorpuzzle.ui.screens.stage_screen.stage_viewModel
 
-import android.util.Log
+import com.colors.collorpuzzle.ui.screens.CellType
 
 
 typealias Matrix = Array<IntArray>
 
 class PaletteAlgorithm {
-
     companion object {
 
         fun floodFill(
@@ -16,8 +15,6 @@ class PaletteAlgorithm {
             oldColor: Int,
             newColorValue: Int,
         ): Matrix {
-            showGrid(grid)
-            Log.e("!TAG", "floodFill: ", )
             helper(
                 grid = grid,
                 sRow = posX,
@@ -27,7 +24,6 @@ class PaletteAlgorithm {
                 visitedBranches = hashSetOf()
             )
 
-            showGrid(grid)
             return grid
         }
 
@@ -47,6 +43,7 @@ class PaletteAlgorithm {
                 !rowInbounds || !cellInbounds -> return
                 visitedBranches.contains(cellName) -> return
                 grid[sCell][sRow] != color -> return
+                color == CellType.BARRIER_CELL.color -> return // TODO double check barrier handling
                 else -> {
                     visitedBranches.add(cellName)
                     grid[sCell][sRow] = newColor
@@ -58,7 +55,7 @@ class PaletteAlgorithm {
             }
         }
 
-        fun showGrid(grid: Array<IntArray>) {
+        fun showGrid(grid: Array<IntArray>) { // print matrix
             grid.forEach {
                 print("[")
                 it.forEach {
@@ -69,7 +66,13 @@ class PaletteAlgorithm {
             }
         }
 
+        fun isSingleColorPalette(color: Int, grid: Matrix): Boolean =
+            !grid.any { intArr -> intArr.any { it != color } }
 
     }
-
 }
+
+fun Matrix.deepMatrixCopy(): Matrix =
+    Array(this.size) { index ->
+        this[index].copyOf()
+    }
