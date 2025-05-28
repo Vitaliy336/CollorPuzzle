@@ -24,7 +24,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -39,6 +38,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun StageScreen(
     modifier: Modifier, stageName: String,
     backClick: () -> Unit,
+    toDialog: (Boolean) -> Unit,
     vm: StageViewModel = koinViewModel<StageViewModel>(),
 ) {
     LaunchedEffect(key1 = Unit) {
@@ -78,6 +78,7 @@ fun StageScreen(
             if (stageValue.isRunOfAttempts || stageValue.isCleared) {
                 if (showDialog.value) {
                     showDialog.value = false
+                    toDialog.invoke(stageValue.isCleared)
                 }
             }
         }
@@ -87,23 +88,6 @@ fun StageScreen(
 @Composable
 fun Loading() {
 
-}
-
-@Composable
-fun ShowDialog(
-    isStageCleared: Boolean,
-    confirmClick: () -> Unit,
-    dismissClick: () -> Unit,
-) {
-    PuzzleDialog(
-        dialogTitle = if (isStageCleared) stringResource(R.string.dialog_stage_cleared_msg) else
-            stringResource(R.string.dialog_stage_failed_msg),
-        isSingleButtonDialog = isStageCleared,
-        confirmRequest = confirmClick,
-        dismissRequest = dismissClick,
-        confirmBtnText = stringResource(R.string.dialog_btn_to_menu),
-        dismissBtnText = if (isStageCleared) "" else stringResource(R.string.dialog_btn_restart)
-    )
 }
 
 @Composable
