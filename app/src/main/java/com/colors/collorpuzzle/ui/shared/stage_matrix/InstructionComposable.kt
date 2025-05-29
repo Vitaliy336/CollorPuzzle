@@ -1,4 +1,4 @@
-package com.colors.collorpuzzle.ui.screens.stage_screen.composable
+package com.colors.collorpuzzle.ui.shared.stage_matrix
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text

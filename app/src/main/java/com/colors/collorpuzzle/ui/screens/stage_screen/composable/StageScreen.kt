@@ -32,6 +32,12 @@ import com.colors.collorpuzzle.ui.screens.CellType
 import com.colors.collorpuzzle.ui.screens.stage_screen.stage_viewModel.Matrix
 import com.colors.collorpuzzle.ui.screens.stage_screen.stage_viewModel.StageIntent
 import com.colors.collorpuzzle.ui.screens.stage_screen.stage_viewModel.StageViewModel
+import com.colors.collorpuzzle.ui.shared.color_selector.ColorsPalette
+import com.colors.collorpuzzle.ui.shared.control_components.MovesLeftComponent
+import com.colors.collorpuzzle.ui.shared.control_components.RestartComposable
+import com.colors.collorpuzzle.ui.shared.stage_matrix.BuildStageMatrix
+import com.colors.collorpuzzle.ui.shared.stage_matrix.ColorToComposable
+import com.colors.collorpuzzle.ui.shared.stage_matrix.getCellColor
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable

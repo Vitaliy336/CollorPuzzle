@@ -1,4 +1,4 @@
-package com.colors.collorpuzzle.ui.screens.stage_screen.composable
+package com.colors.collorpuzzle.ui.shared.stage_dialog
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -171,7 +171,7 @@ fun ActionButtons(
 @Composable
 fun ConfirmButton(btnText: String, buttonClick: () -> Unit) {
     Button(onClick = {
-        buttonClick.invoke()
+        buttonClick()
     }) {
         Text(btnText)
     }
@@ -180,7 +180,7 @@ fun ConfirmButton(btnText: String, buttonClick: () -> Unit) {
 @Composable
 fun CancelButton(btnText: String, buttonClick: () -> Unit) {
     OutlinedButton(onClick = {
-        buttonClick.invoke()
+        buttonClick()
     }) {
         Text(btnText)
     }

@@ -1,4 +1,4 @@
-package com.colors.collorpuzzle.ui.screens.stage_screen.composable
+package com.colors.collorpuzzle.ui.shared.color_selector
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

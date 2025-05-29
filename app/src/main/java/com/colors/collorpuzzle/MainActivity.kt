@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -19,10 +20,11 @@ import androidx.navigation.compose.dialog
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.colors.collorpuzzle.ui.screens.main_menu.composable.ShowMainMenu
-import com.colors.collorpuzzle.ui.screens.stage_screen.composable.PuzzleDialog
+import com.colors.collorpuzzle.ui.shared.stage_dialog.PuzzleDialog
 import com.colors.collorpuzzle.ui.screens.stage_screen.composable.StageScreen
 import com.colors.collorpuzzle.ui.screens.stage_selector.composable.StageSelectorScreen
 import com.colors.collorpuzzle.ui.theme.ColorPuzzleTheme
+import kotlinx.coroutines.flow.first
 
 private const val TAG = "MainActivity"
 
@@ -94,7 +96,10 @@ class MainActivity : ComponentActivity() {
                             navController.popBackStack(StageSelector.route, inclusive = false)
                         },
                         dismissClick = {
-                            navController.navigate(GameScreen.GameMatrix.route)
+                            // TODO double check
+                            navController.navigate(GameScreen.GameMatrix.route) {
+                                popUpTo(GameScreen.GameMatrix.route) {inclusive = true }
+                            }
                         }
                     )
                 }

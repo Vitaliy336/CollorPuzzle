@@ -1,4 +1,4 @@
-package com.colors.collorpuzzle.ui.screens.stage_screen.composable
+package com.colors.collorpuzzle.ui.shared.stage_matrix
 
 import android.widget.Toast
 import androidx.compose.foundation.background

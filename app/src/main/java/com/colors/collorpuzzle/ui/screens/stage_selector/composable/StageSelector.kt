@@ -41,7 +41,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.colors.collorpuzzle.R
-import com.colors.collorpuzzle.ui.screens.loader.ShowLoader
+import com.colors.collorpuzzle.ui.shared.loader.ShowLoader
 import com.colors.collorpuzzle.ui.screens.stage_selector.StageSelectionIntent
 import com.colors.collorpuzzle.ui.screens.stage_selector.view_model.StageSelectorViewModel
 import com.colors.collorpuzzle.ui.screens.stage_selector.view_model.StagesData

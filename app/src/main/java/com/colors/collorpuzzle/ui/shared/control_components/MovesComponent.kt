@@ -1,4 +1,4 @@
-package com.colors.collorpuzzle.ui.screens.stage_screen.composable
+package com.colors.collorpuzzle.ui.shared.control_components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -38,7 +38,6 @@ fun MovesLeftComponent(attempts: Int, modifier: Modifier = Modifier) {
         )
     }
 }
-
 
 @Composable
 @Preview

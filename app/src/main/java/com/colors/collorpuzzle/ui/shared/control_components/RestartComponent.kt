@@ -1,4 +1,4 @@
-package com.colors.collorpuzzle.ui.screens.stage_screen.composable
+package com.colors.collorpuzzle.ui.shared.control_components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.colors.collorpuzzle.R
@@ -44,10 +45,10 @@ fun RestartComposable(
                 .clip(shape = CircleShape)
                 .border(2.dp, color = Color.Gray, shape = CircleShape)
                 .clickable {
-                    restartClick.invoke()
+                    restartClick()
                 }
         )
-        Text(text = "Restart")
+        Text(text = stringResource(R.string.restart_btn_text))
     }
 }
 

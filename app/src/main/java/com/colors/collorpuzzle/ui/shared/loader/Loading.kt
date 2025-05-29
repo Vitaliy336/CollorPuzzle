@@ -1,4 +1,4 @@
-package com.colors.collorpuzzle.ui.screens.loader
+package com.colors.collorpuzzle.ui.shared.loader
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
