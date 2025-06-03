@@ -1,6 +1,6 @@
 package com.colors.collorpuzzle.data.model
 
-import com.colors.collorpuzzle.ui.screens.stage_screen.stage_viewModel.Matrix
+import com.colors.collorpuzzle.data.Matrix
 
 data class Stages(
     val stageCategoryName: String,

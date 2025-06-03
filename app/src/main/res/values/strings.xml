@@ -12,4 +12,10 @@
     <string name="dialog_btn_restart">Restart</string>
     <string name="dialog_stage_cleared_msg">Stage Cleared</string>
     <string name="dialog_stage_failed_msg">No attempts left</string>
+    <string name="constructor_color_to_fill_selected">Fill palette with</string>
+    <string name="constructor_reset_palette">Reset Palette</string>
+    <string name="save_stage">Save Stage</string>
+    <string name="dialog_color_picker_title">Select Color to fill the Palette</string>
+    <string name="dialog_color_picker_confirm">Confirm</string>
+    <string name="dialog_color_picker_cancel">Cancel</string>
 </resources>

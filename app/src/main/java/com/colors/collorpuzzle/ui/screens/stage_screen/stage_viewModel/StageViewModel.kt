@@ -2,6 +2,9 @@ package com.colors.collorpuzzle.ui.screens.stage_screen.stage_viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.colors.collorpuzzle.data.Matrix
+import com.colors.collorpuzzle.data.PaletteAlgorithm
+import com.colors.collorpuzzle.data.deepMatrixCopy
 import com.colors.collorpuzzle.data.local.PuzzleDataStore
 import com.colors.collorpuzzle.data.model.Stage
 import com.colors.collorpuzzle.data.repo.RemoteConfigRepo

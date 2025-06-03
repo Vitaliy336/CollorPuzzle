@@ -20,6 +20,7 @@ import androidx.navigation.compose.dialog
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.colors.collorpuzzle.ui.screens.main_menu.composable.ShowMainMenu
+import com.colors.collorpuzzle.ui.screens.stage_constructor.StageConstructor.StageConstructorScreen
 import com.colors.collorpuzzle.ui.shared.stage_dialog.PuzzleDialog
 import com.colors.collorpuzzle.ui.screens.stage_screen.composable.StageScreen
 import com.colors.collorpuzzle.ui.screens.stage_selector.composable.StageSelectorScreen
@@ -58,8 +59,12 @@ class MainActivity : ComponentActivity() {
                         // TODO:
                     },
                     constructorClicked = {
-                        // TODO:
+                        navController.navigate(StageConstructor.route)
                     })
+            }
+
+            composable(route = StageConstructor.route) {
+                StageConstructorScreen()
             }
 
             navigation(

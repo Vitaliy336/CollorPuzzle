@@ -1,7 +1,6 @@
 package com.colors.collorpuzzle.ui.shared.control_components
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,17 +15,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.colors.collorpuzzle.R
 
 @Composable
-fun RestartComposable(
+fun ImageButtonWithTextComposable(
     modifier: Modifier = Modifier,
-    restartClick: () -> Unit,
+    componentText: String,
+    painter: Painter,
+    buttonClick: () -> Unit,
 ) {
     Column(
         verticalArrangement = Arrangement.Bottom,
@@ -34,21 +36,19 @@ fun RestartComposable(
         modifier = modifier
             .wrapContentWidth()
             .wrapContentHeight()
-            .padding(all = 16.dp)
     ) {
         Image(
-            painter = painterResource(R.drawable.ic_restart), contentDescription = "restart",
+            painter = painter,
+            contentDescription = "restart",
             modifier = modifier
-
                 .padding(horizontal = 16.dp, vertical = 4.dp)
-                .size(56.dp)
+                .size(48.dp)
                 .clip(shape = CircleShape)
-                .border(2.dp, color = Color.Gray, shape = CircleShape)
                 .clickable {
-                    restartClick()
+                    buttonClick()
                 }
         )
-        Text(text = stringResource(R.string.restart_btn_text))
+        Text(text = componentText, textAlign = TextAlign.Center)
     }
 }
 
@@ -57,8 +57,10 @@ fun RestartComposable(
 @Preview
 fun RestartPreview() {
     Surface {
-        RestartComposable(
-            restartClick = {}
+        ImageButtonWithTextComposable(
+            buttonClick = {},
+            componentText = stringResource(R.string.restart_btn_text),
+            painter = painterResource(R.drawable.ic_restart)
         )
     }
 }

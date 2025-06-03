@@ -1,4 +1,4 @@
-package com.colors.collorpuzzle.ui.screens.stage_screen.stage_viewModel
+package com.colors.collorpuzzle.data
 
 import com.colors.collorpuzzle.ui.screens.CellType
 

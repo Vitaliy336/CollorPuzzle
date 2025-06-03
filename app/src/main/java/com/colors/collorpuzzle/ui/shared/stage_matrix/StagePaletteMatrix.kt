@@ -20,7 +20,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.colors.collorpuzzle.ui.screens.CellType
-import com.colors.collorpuzzle.ui.screens.stage_screen.stage_viewModel.Matrix
+import com.colors.collorpuzzle.data.Matrix
+import com.colors.collorpuzzle.ui.screens.CellType.Companion.getCellColor
 
 @Composable
 fun BuildStageMatrix(
@@ -86,16 +87,6 @@ fun MatrixItemBox(
     }
 }
 
-
-fun getCellColor(cellType: Int): CellType {
-    return when (cellType) {
-        1 -> CellType.RED_CELL
-        2 -> CellType.GREEN_CELL
-        3 -> CellType.BLUE_CELL
-        4 -> CellType.YELLOW_CELL
-        else -> CellType.BARRIER_CELL
-    }
-}
 
 @Preview(device = Devices.PIXEL_4_XL)
 @Composable

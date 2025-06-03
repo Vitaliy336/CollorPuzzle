@@ -11,6 +11,10 @@ object MainMenu : AppDestination {
     override val route: String = "main_menu"
 }
 
+object StageConstructor : AppDestination {
+    override val route: String = "stage_constructor"
+}
+
 object GameScreen : AppDestination {
     override val route: String = "game_screen"
     const val stageName = "stage_name"

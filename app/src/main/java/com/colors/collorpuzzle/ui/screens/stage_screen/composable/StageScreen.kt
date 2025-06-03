@@ -24,20 +24,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.colors.collorpuzzle.R
 import com.colors.collorpuzzle.ui.screens.CellType
-import com.colors.collorpuzzle.ui.screens.stage_screen.stage_viewModel.Matrix
+import com.colors.collorpuzzle.data.Matrix
+import com.colors.collorpuzzle.ui.screens.CellType.Companion.getCellColor
 import com.colors.collorpuzzle.ui.screens.stage_screen.stage_viewModel.StageIntent
 import com.colors.collorpuzzle.ui.screens.stage_screen.stage_viewModel.StageViewModel
 import com.colors.collorpuzzle.ui.shared.color_selector.ColorsPalette
 import com.colors.collorpuzzle.ui.shared.control_components.MovesLeftComponent
-import com.colors.collorpuzzle.ui.shared.control_components.RestartComposable
+import com.colors.collorpuzzle.ui.shared.control_components.ImageButtonWithTextComposable
 import com.colors.collorpuzzle.ui.shared.stage_matrix.BuildStageMatrix
 import com.colors.collorpuzzle.ui.shared.stage_matrix.ColorToComposable
-import com.colors.collorpuzzle.ui.shared.stage_matrix.getCellColor
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -135,11 +136,13 @@ fun ShowStageScreen(
                     .padding(bottom = 20.dp)
             )
 
-            RestartComposable(
+            ImageButtonWithTextComposable(
                 modifier = modifier
                     .align(Alignment.BottomCenter)
                     .padding(bottom = 20.dp),
-                restartClick = restartClick
+                componentText = stringResource(R.string.restart_btn_text),
+                painter = painterResource(R.drawable.ic_restart),
+                buttonClick = restartClick
             )
         }
 
