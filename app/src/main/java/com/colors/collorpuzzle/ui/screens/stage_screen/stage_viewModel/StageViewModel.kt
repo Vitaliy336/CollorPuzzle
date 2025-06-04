@@ -8,6 +8,7 @@ import com.colors.collorpuzzle.data.deepMatrixCopy
 import com.colors.collorpuzzle.data.local.PuzzleDataStore
 import com.colors.collorpuzzle.data.model.Stage
 import com.colors.collorpuzzle.data.repo.RemoteConfigRepo
+import com.colors.collorpuzzle.ui.screens.stage_screen.StageIntent
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -49,7 +50,14 @@ class StageViewModel(
                 stageIntent.color
             )
 
-            is StageIntent.InitStage -> getStageData(stageIntent.name)
+            is StageIntent.InitStage -> {
+                if (stageIntent.isFromConstructor) {
+                    getStageFromConstructor("")
+                } else {
+                    getStageFromConfig(stageIntent.name)
+                }
+            }
+
             StageIntent.RestartStage -> resetStage()
         }
     }
@@ -58,7 +66,7 @@ class StageViewModel(
         _selectedColor.value = color
     }
 
-    private fun getStageData(stageName: String) {
+    private fun getStageFromConfig(stageName: String) {
         val stages = repo.getConfigs()
         val stage: Stage? = stages.flatMap { it.stages }.find { it.stageName == stageName }
         if (stage != null) {
@@ -74,7 +82,11 @@ class StageViewModel(
         }
     }
 
-    fun resetStage() {
+    private fun getStageFromConstructor(stageData: String) {
+        // TODO:  
+    }
+
+    private fun resetStage() {
         matrixToPlayWith = stageData.stagePalette.deepMatrixCopy()
         attemptsCount = stageData.stageAttempts
         _gameScreenFlow.value = GameScreenState.UpdateGameScreen(
@@ -84,7 +96,7 @@ class StageViewModel(
         )
     }
 
-    fun cellClick(posX: Int, posY: Int, color: Int) {
+    private fun cellClick(posX: Int, posY: Int, color: Int) {
         when {
             _selectedColor.value == 0 -> return // color is not selected
             _selectedColor.value == color -> return // no need to change on click at the same color

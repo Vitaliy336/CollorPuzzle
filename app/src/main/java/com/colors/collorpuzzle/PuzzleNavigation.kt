@@ -18,8 +18,14 @@ object StageConstructor : AppDestination {
 object GameScreen : AppDestination {
     override val route: String = "game_screen"
     const val stageName = "stage_name"
-    val routeWithArgs = "${route}/{${stageName}}"
-    val arguments = listOf(navArgument(stageName) { type = NavType.StringType })
+    const val constructor = "from_constructor"
+    val routeWithArgs = "${route}/{${stageName}}/{${constructor}}"
+    val arguments = listOf(
+        navArgument(stageName) { type = NavType.StringType },
+        navArgument(constructor) { type = NavType.BoolType
+        defaultValue = false}
+
+    )
 
     object GameMatrix : AppDestination {
         override val route: String = "game_matrix"

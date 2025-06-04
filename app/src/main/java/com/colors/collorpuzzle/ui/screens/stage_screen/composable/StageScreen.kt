@@ -32,7 +32,7 @@ import com.colors.collorpuzzle.R
 import com.colors.collorpuzzle.ui.screens.CellType
 import com.colors.collorpuzzle.data.Matrix
 import com.colors.collorpuzzle.ui.screens.CellType.Companion.getCellColor
-import com.colors.collorpuzzle.ui.screens.stage_screen.stage_viewModel.StageIntent
+import com.colors.collorpuzzle.ui.screens.stage_screen.StageIntent
 import com.colors.collorpuzzle.ui.screens.stage_screen.stage_viewModel.StageViewModel
 import com.colors.collorpuzzle.ui.shared.color_selector.ColorsPalette
 import com.colors.collorpuzzle.ui.shared.control_components.MovesLeftComponent
@@ -43,13 +43,15 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun StageScreen(
-    modifier: Modifier, stageName: String,
+    modifier: Modifier,
+    stageName: String,
+    isFromConstructor: Boolean,
     backClick: () -> Unit,
     toDialog: (Boolean) -> Unit,
     vm: StageViewModel = koinViewModel<StageViewModel>(),
 ) {
     LaunchedEffect(key1 = Unit) {
-        vm.handleIntent(StageIntent.InitStage(stageName))
+        vm.handleIntent(StageIntent.InitStage(stageName, isFromConstructor))
     }
     val showDialog = rememberSaveable { mutableStateOf(true) }
 

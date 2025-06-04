@@ -76,12 +76,16 @@ class MainActivity : ComponentActivity() {
                 composable(route = GameScreen.GameMatrix.route) { entry ->
                     val parentEntry =
                         remember(entry) { navController.getBackStackEntry(GameScreen.routeWithArgs) }
-                    val stageName = parentEntry.arguments?.getString(GameScreen.stageName) ?: ""
+                    val stageName: String =
+                        parentEntry.arguments?.getString(GameScreen.stageName) ?: ""
+                    val isFromConstructor: Boolean =
+                        parentEntry.arguments?.getBoolean(GameScreen.constructor) == true
                     StageScreen(
                         modifier = Modifier, stageName = stageName,
                         backClick = {
                             navController.navigateUp()
                         },
+                        isFromConstructor = isFromConstructor,
                         toDialog = { isCleared ->
                             navController.openDialog(if (isCleared) DialogState.STAGE_CLEARED else DialogState.OUT_OF_ATTEMPTS)
                         })
@@ -103,7 +107,7 @@ class MainActivity : ComponentActivity() {
                         dismissClick = {
                             // TODO double check
                             navController.navigate(GameScreen.GameMatrix.route) {
-                                popUpTo(GameScreen.GameMatrix.route) {inclusive = true }
+                                popUpTo(GameScreen.GameMatrix.route) { inclusive = true }
                             }
                         }
                     )
@@ -118,7 +122,7 @@ class MainActivity : ComponentActivity() {
                     },
                     selectStageClick = { name ->
                         Log.d(TAG, "NavigationComponent: selected stage name = $name")
-                        navController.navigateToSelectedStage(name)
+                        navController.navigateToSelectedStage(name, true)
                     })
             }
         }
@@ -141,8 +145,11 @@ class MainActivity : ComponentActivity() {
         )
     }
 
-    private fun NavHostController.navigateToSelectedStage(stageName: String) {
-        this.navigate("${GameScreen.route}/${stageName}") {
+    private fun NavHostController.navigateToSelectedStage(
+        stageName: String,
+        constructor: Boolean = false,
+    ) {
+        this.navigate("${GameScreen.route}/${stageName}/${constructor}") {
             launchSingleTop = true
         }
     }
