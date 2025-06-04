@@ -46,7 +46,7 @@ import com.colors.collorpuzzle.ui.shared.stage_matrix.BuildStageMatrix
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun StageConstructorScreen() {
+fun StageConstructorScreen(backClick: () -> Unit) {
     val vm: StageConstructorViewModel = koinViewModel<StageConstructorViewModel>()
     val matrixState = vm.constructorStateFlow.collectAsState()
     val selectedColor = vm.selectedColor.collectAsState()
@@ -72,7 +72,8 @@ fun StageConstructorScreen() {
         },
         paletteClick = { x, y, cellColor ->
             vm.handleIntent(PaletteClick(x, y, cellColor))
-        }
+        },
+        backClick = backClick
     )
 
     if (shouldShowDialog.value) {
@@ -112,6 +113,7 @@ private fun ConstructorTemplate(
     colorSelectorClick: (Int) -> Unit,
     paletteClick: (x: Int, y: Int, cellColor: Int) -> Unit,
     resetPaletteClick: () -> Unit,
+    backClick: () -> Unit
 ) {
 
     Row(modifier = modifier) {
@@ -132,7 +134,9 @@ private fun ConstructorTemplate(
                     modifier = Modifier
                         .align(alignment = Alignment.Start)
                         .padding(all = 8.dp),
-                    backClick = {}
+                    backClick = {
+                        backClick.invoke()
+                    }
                 )
                 ImageButtonWithTextComposable(
                     modifier = Modifier,
@@ -289,7 +293,8 @@ private fun ConstructorPreview() {
         colorSelectorClick = {},
         resetPaletteClick = {},
         colorToFillPaletteClick = {},
-        paletteClick = { x, y, color -> })
+        paletteClick = { x, y, color -> },
+        backClick = {})
 }
 
 @Preview(showBackground = true)
