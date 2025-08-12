@@ -35,7 +35,6 @@ class StageViewModel(
             val isCleared: Boolean = false,
             val isRunOfAttempts: Boolean = false,
         ) : GameScreenState()
-
         object Loading : GameScreenState()
         object Error : GameScreenState()
     }
@@ -48,7 +47,6 @@ class StageViewModel(
                 stageIntent.y,
                 stageIntent.color
             )
-
             is StageIntent.InitStage -> getStageData(stageIntent.name)
             StageIntent.RestartStage -> resetStage()
         }
@@ -74,7 +72,7 @@ class StageViewModel(
         }
     }
 
-    fun resetStage() {
+    private fun resetStage() {
         matrixToPlayWith = stageData.stagePalette.deepMatrixCopy()
         attemptsCount = stageData.stageAttempts
         _gameScreenFlow.value = GameScreenState.UpdateGameScreen(
@@ -84,45 +82,44 @@ class StageViewModel(
         )
     }
 
-    fun cellClick(posX: Int, posY: Int, color: Int) {
-        when {
-            _selectedColor.value == 0 -> return // color is not selected
-            _selectedColor.value == color -> return // no need to change on click at the same color
-            else -> {
-                PaletteAlgorithm.floodFill(
-                    grid = matrixToPlayWith,
-                    posX = posX,
-                    posY = posY,
-                    oldColor = color,
-                    newColorValue = _selectedColor.value
-                )
-                attemptsCount--
-                when {
-                    PaletteAlgorithm.isSingleColorPalette(
-                        color = stageData.colorToPaint,
-                        grid = matrixToPlayWith
-                    ) -> { // check matrix colors
-                        _gameScreenFlow.update {
-                            it as GameScreenState.UpdateGameScreen
-                            it.copy(isCleared = true)
-                        }
-                        stageCleared(stageData.stageName)
+    private fun cellClick(posX: Int, posY: Int, color: Int) {
+        if (_selectedColor.value == 0 || _selectedColor.value == color) {
+            // no actions needed if color is not selected or user clicked on the same color cell
+            return
+        } else {
+            PaletteAlgorithm.floodFill(
+                grid = matrixToPlayWith,
+                posX = posX,
+                posY = posY,
+                oldColor = color,
+                newColorValue = _selectedColor.value
+            )
+            attemptsCount--
+            when {
+                PaletteAlgorithm.isSingleColorPalette(
+                    color = stageData.colorToPaint,
+                    grid = matrixToPlayWith
+                ) -> { // check matrix colors
+                    _gameScreenFlow.update {
+                        it as GameScreenState.UpdateGameScreen
+                        it.copy(isCleared = true)
                     }
+                    stageCleared(stageData.stageName)
+                }
 
-                    attemptsCount < 0 -> {
-                        _gameScreenFlow.update {
-                            it as GameScreenState.UpdateGameScreen
-                            it.copy(isRunOfAttempts = true)
-                        }
+                attemptsCount < 0 -> {
+                    _gameScreenFlow.update {
+                        it as GameScreenState.UpdateGameScreen
+                        it.copy(isRunOfAttempts = true)
                     }
+                }
 
-                    else -> {
-                        _gameScreenFlow.update {
-                            (it as GameScreenState.UpdateGameScreen).copy(
-                                matrix = matrixToPlayWith,
-                                attemptsLeft = attemptsCount
-                            )
-                        }
+                else -> {
+                    _gameScreenFlow.update {
+                        (it as GameScreenState.UpdateGameScreen).copy(
+                            matrix = matrixToPlayWith,
+                            attemptsLeft = attemptsCount
+                        )
                     }
                 }
             }

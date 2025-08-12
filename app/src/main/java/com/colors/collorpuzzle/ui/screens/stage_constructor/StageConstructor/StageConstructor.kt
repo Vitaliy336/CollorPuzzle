@@ -40,6 +40,7 @@ import com.colors.collorpuzzle.ui.screens.stage_constructor.ConstructorIntent
 import com.colors.collorpuzzle.ui.screens.stage_constructor.ConstructorIntent.PaletteClick
 import com.colors.collorpuzzle.ui.screens.stage_constructor.ConstructorIntent.SelectColorToFillPalette
 import com.colors.collorpuzzle.ui.screens.stage_constructor.view_model.StageConstructorViewModel
+import com.colors.collorpuzzle.ui.screens.stage_constructor.view_model.StageConstructorViewModel.ConstructorData
 import com.colors.collorpuzzle.ui.shared.color_selector.ColorsPalette
 import com.colors.collorpuzzle.ui.shared.control_components.ImageButtonWithTextComposable
 import com.colors.collorpuzzle.ui.shared.stage_matrix.BuildStageMatrix
@@ -48,19 +49,15 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun StageConstructorScreen(backClick: () -> Unit) {
     val vm: StageConstructorViewModel = koinViewModel<StageConstructorViewModel>()
-    val matrixState = vm.constructorStateFlow.collectAsState()
-    val selectedColor = vm.selectedColor.collectAsState()
-    val colorToFillPalette = vm.colorToFillPalette.collectAsState()
 
     val shouldShowDialog = rememberSaveable { mutableStateOf(false) }
+    val constructorState = vm.constructorStateFlow.collectAsState()
 
     ConstructorTemplate(
         modifier = Modifier
             .fillMaxSize()
             .windowInsetsPadding(WindowInsets.safeDrawing),
-        matrix = matrixState.value,
-        selectedColor = selectedColor.value,
-        colorToFillPalette = colorToFillPalette.value,
+        constructorData = constructorState.value,
         colorSelectorClick = { color ->
             vm.handleIntent(ConstructorIntent.UpdateSelectedColor(color))
         },
@@ -78,7 +75,7 @@ fun StageConstructorScreen(backClick: () -> Unit) {
 
     if (shouldShowDialog.value) {
         ShowColorPickerDialog(
-            selectedColor = colorToFillPalette.value,
+            selectedColor = constructorState.value.colorToFillPalette,
             dismissRequest = {
                 shouldShowDialog.value = false
             },
@@ -106,14 +103,12 @@ private fun ShowColorPickerDialog(
 @Composable
 private fun ConstructorTemplate(
     modifier: Modifier = Modifier,
-    matrix: Matrix,
-    selectedColor: Int,
-    colorToFillPalette: Int,
+    constructorData: ConstructorData,
     colorToFillPaletteClick: () -> Unit,
     colorSelectorClick: (Int) -> Unit,
     paletteClick: (x: Int, y: Int, cellColor: Int) -> Unit,
     resetPaletteClick: () -> Unit,
-    backClick: () -> Unit
+    backClick: () -> Unit,
 ) {
 
     Row(modifier = modifier) {
@@ -148,8 +143,8 @@ private fun ConstructorTemplate(
                 )
                 ColorToFillPaletteSelector(
                     modifier = Modifier,
-                    colorToFillPalette = colorToFillPalette,
-                    colorSelectorClick = { colorToFillPaletteClick.invoke()  }
+                    colorToFillPalette = constructorData.colorToFillPalette,
+                    colorSelectorClick = { colorToFillPaletteClick.invoke() }
                 )
                 ImageButtonWithTextComposable(
                     modifier = Modifier,
@@ -169,7 +164,7 @@ private fun ConstructorTemplate(
         ) {
             PaletteConstructor(
                 modifier = Modifier,
-                matrix = matrix,
+                matrix = constructorData.matrix,
                 cellClick = { x, y, color ->
                     paletteClick(x, y, color)
                 })
@@ -181,7 +176,9 @@ private fun ConstructorTemplate(
                 .weight(15f)
         ) {
             ColorsPalette(
-                modifier = Modifier, selectedColor = selectedColor, clickListener = { color ->
+                modifier = Modifier,
+                selectedColor = constructorData.selectedColor,
+                clickListener = { color ->
                     colorSelectorClick(color)
                 })
         }
@@ -276,20 +273,18 @@ fun PaletteConstructor(
 )
 @Composable
 private fun ConstructorPreview() {
+
+    val initialConstructorMatrix by lazy {
+        Array(8) { IntArray(10) { CellType.EMPTY_CELL.color } } // default matrix 8 rows and 10 columns maybe add custom sizes in future
+    }
+
     ConstructorTemplate(
         modifier = Modifier,
-        matrix = arrayOf(
-            intArrayOf(-2, -2, -2, -2, -2, -2, -2, -2, -2, -2),
-            intArrayOf(-2, -2, -2, -2, -2, -2, -2, -2, -2, -2),
-            intArrayOf(-2, -2, -2, -2, -2, -2, -2, -2, -2, -2),
-            intArrayOf(-2, -2, -2, -2, -2, -2, -2, -2, -2, -2),
-            intArrayOf(-2, -2, -2, -2, -2, -2, -2, -2, -2, -2),
-            intArrayOf(-2, -2, -2, -2, -2, -2, -2, -2, -2, -2),
-            intArrayOf(-2, -2, -2, -2, -2, -2, -2, -2, -2, -2),
-            intArrayOf(-2, -2, -2, -2, -2, -2, -2, -2, -2, -2)
+        constructorData = ConstructorData(
+            matrix = initialConstructorMatrix,
+            colorToFillPalette = CellType.GREEN_CELL.color,
+            selectedColor = CellType.EMPTY_CELL.color
         ),
-        selectedColor = 1,
-        colorToFillPalette = 1,
         colorSelectorClick = {},
         resetPaletteClick = {},
         colorToFillPaletteClick = {},

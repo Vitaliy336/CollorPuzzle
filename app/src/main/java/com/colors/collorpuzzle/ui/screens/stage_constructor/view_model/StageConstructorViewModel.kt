@@ -3,35 +3,37 @@ package com.colors.collorpuzzle.ui.screens.stage_constructor.view_model
 import androidx.lifecycle.ViewModel
 import com.colors.collorpuzzle.data.Matrix
 import com.colors.collorpuzzle.data.deepMatrixCopy
+import com.colors.collorpuzzle.ui.screens.CellType
 import com.colors.collorpuzzle.ui.screens.stage_constructor.ConstructorIntent
+import com.colors.collorpuzzle.ui.shared.color_selector.ColorSelector
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 
 class StageConstructorViewModel : ViewModel() {
 
-    private val initialConstructorMatrix = arrayOf(
-        intArrayOf(-2, -2, -2, -2, -2, -2, -2, -2, -2, -2),
-        intArrayOf(-2, -2, -2, -2, -2, -2, -2, -2, -2, -2),
-        intArrayOf(-2, -2, -2, -2, -2, -2, -2, -2, -2, -2),
-        intArrayOf(-2, -2, -2, -2, -2, -2, -2, -2, -2, -2),
-        intArrayOf(-2, -2, -2, -2, -2, -2, -2, -2, -2, -2),
-        intArrayOf(-2, -2, -2, -2, -2, -2, -2, -2, -2, -2),
-        intArrayOf(-2, -2, -2, -2, -2, -2, -2, -2, -2, -2),
-        intArrayOf(-2, -2, -2, -2, -2, -2, -2, -2, -2, -2)
+    private val initialConstructorMatrix by lazy {
+        Array(8) { IntArray(10) { CellType.EMPTY_CELL.color } } // default matrix 8 rows and 10 columns maybe add custom sizes in future
+    }
+
+    data class ConstructorData(
+        val matrix: Matrix,
+        val colorToFillPalette: Int,
+        val selectedColor: Int,
     )
 
     private var matrixToPlayWith: Matrix = initialConstructorMatrix.deepMatrixCopy()
-    private val _selectedColorState = MutableStateFlow(-2)
-    private val _colorToFillPalette = MutableStateFlow(0)
-    private val _constructorState: MutableStateFlow<Matrix> =
-        MutableStateFlow<Matrix>(
-            matrixToPlayWith
+
+    private val _constructorState =
+        MutableStateFlow(
+            ConstructorData(
+                matrix = matrixToPlayWith,
+                colorToFillPalette = CellType.EMPTY_CELL.color,
+                selectedColor = CellType.EMPTY_CELL.color
+            )
         )
 
-    val selectedColor: StateFlow<Int> = _selectedColorState
-    val constructorStateFlow: StateFlow<Matrix> = _constructorState
-    val colorToFillPalette: StateFlow<Int> = _colorToFillPalette
+    val constructorStateFlow: StateFlow<ConstructorData> = _constructorState
 
     fun handleIntent(constructorIntent: ConstructorIntent) {
         when (constructorIntent) {
@@ -48,30 +50,34 @@ class StageConstructorViewModel : ViewModel() {
         }
     }
 
-    fun updatePalette(x: Int, y: Int, cellColor: Int) {
-        if (cellColor == selectedColor.value) return // no need to pain cell in the same color
-        if (selectedColor.value == -2) return // color is not selected ignoring a call
+    private fun updatePalette(x: Int, y: Int, cellColor: Int) {
+        val selectedColor = _constructorState.value.selectedColor
+        if (selectedColor == cellColor || selectedColor == CellType.EMPTY_CELL.color) {
+            // no actions needed, color is not selected or user clicked on the same color cell
+            return
+        } else {
+            matrixToPlayWith = matrixToPlayWith.deepMatrixCopy().also {
+                it[y][x] = selectedColor
+            }
 
-        matrixToPlayWith = matrixToPlayWith.deepMatrixCopy().apply {
-            this[y][x] = selectedColor.value
-        }
-        _constructorState.update {
-            matrixToPlayWith
+            _constructorState.update {
+                it.copy(matrix = matrixToPlayWith)
+            }
         }
     }
 
-    fun resetConstructorPalette() {
+    private fun resetConstructorPalette() {
         matrixToPlayWith = initialConstructorMatrix.deepMatrixCopy()
         _constructorState.update {
-            matrixToPlayWith
+            it.copy(matrix = matrixToPlayWith)
         }
     }
 
-    fun setColorToFillPalette(color: Int) {
-        _colorToFillPalette.value = color
+    private fun setColorToFillPalette(color: Int) {
+        _constructorState.value = _constructorState.value.copy(colorToFillPalette = color)
     }
 
-    fun setSelectedColor(color: Int) {
-        _selectedColorState.value = color
+    private fun setSelectedColor(color: Int) {
+        _constructorState.value = _constructorState.value.copy(selectedColor = color)
     }
 }
