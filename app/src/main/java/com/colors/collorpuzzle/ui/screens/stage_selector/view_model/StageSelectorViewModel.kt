@@ -4,7 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.colors.collorpuzzle.data.local.PuzzleDataStore
 import com.colors.collorpuzzle.data.repo.RemoteConfigRepo
-import com.colors.collorpuzzle.data.repo.RemoteConfigRepoImpl
+import com.colors.collorpuzzle.data.repo.RemoteConfigRepoImpl.ConfigState
+import com.colors.collorpuzzle.data.repo.RemoteConfigRepoImpl.ConfigState.Success
 import com.colors.collorpuzzle.ui.screens.stage_selector.StageSelectionIntent
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,7 +32,7 @@ class StageSelectorViewModel(
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(1000),
-            initialValue = RemoteConfigRepoImpl.ConfigState.Loading()
+            initialValue = ConfigState.Loading()
         )
 
     val levelsStateFlow: StateFlow<LevelsState> = _levelsFlow
@@ -39,7 +40,7 @@ class StageSelectorViewModel(
     fun handleIntent(stageSelectionIntent: StageSelectionIntent) {
         when (stageSelectionIntent) {
             is StageSelectionIntent.FetchStages -> fetchLevelsData()
-         }
+        }
     }
 
     sealed class LevelsState {
@@ -48,20 +49,20 @@ class StageSelectorViewModel(
         data class Success(val data: List<StagesData>) : LevelsState()
     }
 
-   private fun fetchLevelsData() {
+    private fun fetchLevelsData() {
         viewModelScope.launch {
             _config.combine(_levels) { config, levels ->
                 when (config) {
-                    is RemoteConfigRepoImpl.ConfigState.Error -> _levelsFlow.value =
+                    is ConfigState.Error -> _levelsFlow.value =
                         LevelsState.Error
 
-                    is RemoteConfigRepoImpl.ConfigState.Loading -> {
+                    is ConfigState.Loading -> {
                         _levelsFlow.value =
                             LevelsState.Loading
                         delay(2000) // just to simulate loading
                     }
 
-                    is RemoteConfigRepoImpl.ConfigState.Success -> _levelsFlow.value =
+                    is Success -> _levelsFlow.value =
                         LevelsState.Success(
                             data = config.config.map { stage ->
                                 StagesData(
