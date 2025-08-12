@@ -69,6 +69,13 @@ class PaletteAlgorithm {
         fun isSingleColorPalette(color: Int, grid: Matrix): Boolean =
             !grid.any { intArr -> intArr.any { it != color } }
 
+        fun hasEmptyCells(grid: Matrix): Boolean =
+            grid.any { intArr -> intArr.any { it == CellType.EMPTY_CELL.color } }
+
+        fun hasOtherColors(grid: Matrix): Boolean {
+            val color = grid[0][0]
+            return isSingleColorPalette(color = color, grid = grid)
+        }
     }
 }
 

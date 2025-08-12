@@ -83,7 +83,7 @@ class StageViewModel(
     }
 
     private fun getStageFromConstructor(stageData: String) {
-        // TODO:  
+        // TODO:
     }
 
     private fun resetStage() {

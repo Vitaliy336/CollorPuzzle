@@ -18,4 +18,8 @@
     <string name="dialog_color_picker_title">Select Color to fill the Palette</string>
     <string name="dialog_color_picker_confirm">Confirm</string>
     <string name="dialog_color_picker_cancel">Cancel</string>
+
+    <string name="stage_constructor_error_single_color"> Palette should contain more than one color</string>
+    <string name="stage_constructor_error_empty_cell"> Palette is not filled</string>
+    <string name="stage_constructor_empty_fill_color"> Fill color is missing</string>
 </resources>

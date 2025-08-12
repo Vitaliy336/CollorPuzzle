@@ -1,5 +1,8 @@
 package com.colors.collorpuzzle
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -26,6 +29,7 @@ import com.colors.collorpuzzle.ui.shared.stage_dialog.PuzzleDialog
 import com.colors.collorpuzzle.ui.theme.ColorPuzzleTheme
 
 private const val TAG = "MainActivity"
+const val stage_data = "stage_data"
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -157,6 +161,13 @@ class MainActivity : ComponentActivity() {
     private fun NavHostController.openDialog(dialogState: DialogState) {
         this.navigate("${GameScreen.GameDialog.route}/${dialogState}") {
             launchSingleTop = true
+        }
+    }
+
+    fun Context.copyStageToClipBoard(stageJson: String) {
+        val clipboardManager = this.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+        clipboardManager.apply {
+            this.setPrimaryClip(ClipData.newPlainText(stage_data, stageJson))
         }
     }
 }

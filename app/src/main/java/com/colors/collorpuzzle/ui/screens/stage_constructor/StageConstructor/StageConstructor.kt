@@ -1,5 +1,6 @@
 package com.colors.collorpuzzle.ui.screens.stage_constructor.StageConstructor
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -51,9 +52,9 @@ fun StageConstructorScreen(backClick: () -> Unit) {
     val matrixState = vm.constructorStateFlow.collectAsState()
     val selectedColor = vm.selectedColor.collectAsState()
     val colorToFillPalette = vm.colorToFillPalette.collectAsState()
+    val saveStageState = vm.saveStageFlow.collectAsState()
 
     val shouldShowDialog = rememberSaveable { mutableStateOf(false) }
-
     ConstructorTemplate(
         modifier = Modifier
             .fillMaxSize()
@@ -73,8 +74,15 @@ fun StageConstructorScreen(backClick: () -> Unit) {
         paletteClick = { x, y, cellColor ->
             vm.handleIntent(PaletteClick(x, y, cellColor))
         },
+        saveStageClick = {
+            vm.handleIntent(ConstructorIntent.SaveStage)
+        },
         backClick = backClick
     )
+
+    val json = saveStageState.value.stageJson
+    val error = saveStageState.value.errorType
+    Log.e("!", "StageConstructorScreen: json= $json, error= ${error}", )
 
     if (shouldShowDialog.value) {
         ShowColorPickerDialog(
@@ -110,10 +118,11 @@ private fun ConstructorTemplate(
     selectedColor: Int,
     colorToFillPalette: Int,
     colorToFillPaletteClick: () -> Unit,
+    saveStageClick: () -> Unit,
     colorSelectorClick: (Int) -> Unit,
     paletteClick: (x: Int, y: Int, cellColor: Int) -> Unit,
     resetPaletteClick: () -> Unit,
-    backClick: () -> Unit
+    backClick: () -> Unit,
 ) {
 
     Row(modifier = modifier) {
@@ -143,13 +152,13 @@ private fun ConstructorTemplate(
                     componentText = stringResource(R.string.save_stage),
                     painter = painterResource(R.drawable.ic_save),
                     buttonClick = {
-
+                        saveStageClick.invoke()
                     }
                 )
                 ColorToFillPaletteSelector(
                     modifier = Modifier,
                     colorToFillPalette = colorToFillPalette,
-                    colorSelectorClick = { colorToFillPaletteClick.invoke()  }
+                    colorSelectorClick = { colorToFillPaletteClick.invoke() }
                 )
                 ImageButtonWithTextComposable(
                     modifier = Modifier,
@@ -294,6 +303,7 @@ private fun ConstructorPreview() {
         resetPaletteClick = {},
         colorToFillPaletteClick = {},
         paletteClick = { x, y, color -> },
+        saveStageClick = {},
         backClick = {})
 }
 
