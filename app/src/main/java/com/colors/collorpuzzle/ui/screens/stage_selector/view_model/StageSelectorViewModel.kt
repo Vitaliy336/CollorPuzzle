@@ -21,7 +21,7 @@ class StageSelectorViewModel(
 ) : ViewModel() {
 
     private val _levelsFlow = MutableStateFlow<LevelsState>(LevelsState.Loading)
-    private val _levels = localStorage.clearedLevelsFlow
+    private val _levels = localStorage.getClearedLvlFlow()
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(1000),

@@ -16,7 +16,7 @@ import kotlinx.coroutines.runBlocking
 
 private const val PREF_DATA_STORE_NAME = "PUZZLE_PREFS"
 
-class PuzzleDataStore(appContext: Context) {
+class PuzzleDataStore(appContext: Context) : IPuzzleDataStore {
 
     private val gson = Gson()
     private val Context.dataStore by preferencesDataStore(name = PREF_DATA_STORE_NAME)
@@ -27,7 +27,18 @@ class PuzzleDataStore(appContext: Context) {
         val CLEARED_LVL_SET = stringPreferencesKey("cleared_levels")
     }
 
-    suspend fun addClearedLvl(lvlNameStr: String) {
+    private val clearedLevelsFlow: Flow<Set<String>> = dataStore.data
+        .map { prefs ->
+            val dataStr = prefs[PreferencesKeys.CLEARED_LVL_SET]
+            if (!dataStr.isNullOrEmpty()) {
+                val type = object : TypeToken<Set<String>>() {}.type
+                gson.fromJson<Set<String>>(dataStr, type)
+            } else {
+                setOf<String>()
+            }
+        }
+
+    override suspend fun addClearedLvl(lvlNameStr: String) {
         val levels: Set<String> = getClearedLvlSet()
         if (!levels.contains(lvlNameStr)) {
             val mutableSet = mutableSetOf<String>().apply {
@@ -42,18 +53,7 @@ class PuzzleDataStore(appContext: Context) {
         }
     }
 
-    val clearedLevelsFlow: Flow<Set<String>> = dataStore.data
-        .map { prefs ->
-            val dataStr = prefs[PreferencesKeys.CLEARED_LVL_SET]
-            if (!dataStr.isNullOrEmpty()) {
-                val type = object : TypeToken<Set<String>>() {}.type
-                gson.fromJson<Set<String>>(dataStr, type)
-            } else {
-                setOf<String>()
-            }
-        }
-
-     fun getClearedLvlSet(): Set<String> {
+    override fun getClearedLvlSet(): Set<String> {
         return runBlocking {
             val clearedLevelsJson: String? = dataStore.data.first()[PreferencesKeys.CLEARED_LVL_SET]
             if (clearedLevelsJson.isNullOrEmpty()) {
@@ -63,5 +63,9 @@ class PuzzleDataStore(appContext: Context) {
                 gson.fromJson<Set<String>>(clearedLevelsJson, type)
             }
         }
+    }
+
+    override fun getClearedLvlFlow(): Flow<Set<String>> {
+        return clearedLevelsFlow
     }
 }
