@@ -19,9 +19,9 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.colors.collorpuzzle.ui.screens.CellType
+import com.colors.collorpuzzle.data.CellType
 import com.colors.collorpuzzle.data.Matrix
-import com.colors.collorpuzzle.ui.screens.CellType.Companion.getCellColor
+import com.colors.collorpuzzle.data.CellType.Companion.getCellColor
 
 @Composable
 fun BuildStageMatrix(

@@ -28,7 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import com.colors.collorpuzzle.ui.screens.CellType
+import com.colors.collorpuzzle.data.CellType
 import kotlinx.coroutines.delay
 
 private val cubeColors = listOf<CellType>(

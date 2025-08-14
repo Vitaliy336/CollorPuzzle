@@ -1,4 +1,4 @@
-package com.colors.collorpuzzle.ui.screens.stage_constructor.StageConstructor
+package com.colors.collorpuzzle.ui.screens.stage_constructor.stage_constructor
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -35,10 +35,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.colors.collorpuzzle.R
 import com.colors.collorpuzzle.data.Matrix
-import com.colors.collorpuzzle.ui.screens.CellType
-import com.colors.collorpuzzle.ui.screens.stage_constructor.ConstructorIntent
-import com.colors.collorpuzzle.ui.screens.stage_constructor.ConstructorIntent.PaletteClick
-import com.colors.collorpuzzle.ui.screens.stage_constructor.ConstructorIntent.SelectColorToFillPalette
+import com.colors.collorpuzzle.data.CellType
+import com.colors.collorpuzzle.ui.screens.stage_constructor.view_model.ConstructorIntent
+import com.colors.collorpuzzle.ui.screens.stage_constructor.view_model.ConstructorIntent.PaletteClick
+import com.colors.collorpuzzle.ui.screens.stage_constructor.view_model.ConstructorIntent.SelectColorToFillPalette
 import com.colors.collorpuzzle.ui.screens.stage_constructor.view_model.StageConstructorViewModel
 import com.colors.collorpuzzle.ui.screens.stage_constructor.view_model.StageConstructorViewModel.ConstructorData
 import com.colors.collorpuzzle.ui.shared.color_selector.ColorsPalette

@@ -29,9 +29,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.colors.collorpuzzle.R
-import com.colors.collorpuzzle.ui.screens.CellType
+import com.colors.collorpuzzle.data.CellType
 import com.colors.collorpuzzle.data.Matrix
-import com.colors.collorpuzzle.ui.screens.CellType.Companion.getCellColor
+import com.colors.collorpuzzle.data.CellType.Companion.getCellColor
 import com.colors.collorpuzzle.ui.screens.stage_screen.stage_viewModel.StageIntent
 import com.colors.collorpuzzle.ui.screens.stage_screen.stage_viewModel.StageViewModel
 import com.colors.collorpuzzle.ui.shared.color_selector.ColorsPalette

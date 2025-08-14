@@ -6,7 +6,7 @@ import com.colors.collorpuzzle.data.local.PuzzleDataStore
 import com.colors.collorpuzzle.data.repo.RemoteConfigRepo
 import com.colors.collorpuzzle.data.repo.RemoteConfigRepoImpl.ConfigState
 import com.colors.collorpuzzle.data.repo.RemoteConfigRepoImpl.ConfigState.Success
-import com.colors.collorpuzzle.ui.screens.stage_selector.StageSelectionIntent
+import com.colors.collorpuzzle.ui.screens.stage_selector.view_model.StageSelectionIntent
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

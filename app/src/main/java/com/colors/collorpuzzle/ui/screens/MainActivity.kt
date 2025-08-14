@@ -1,4 +1,4 @@
-package com.colors.collorpuzzle
+package com.colors.collorpuzzle.ui.screens
 
 import android.os.Bundle
 import android.util.Log
@@ -18,12 +18,19 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.dialog
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import com.colors.collorpuzzle.DialogState
+import com.colors.collorpuzzle.GameScreen
+import com.colors.collorpuzzle.MainMenu
+import com.colors.collorpuzzle.R
+import com.colors.collorpuzzle.StageConstructor
+import com.colors.collorpuzzle.StageSelector
 import com.colors.collorpuzzle.ui.screens.main_menu.composable.ShowMainMenu
-import com.colors.collorpuzzle.ui.screens.stage_constructor.StageConstructor.StageConstructorScreen
+import com.colors.collorpuzzle.ui.screens.stage_constructor.stage_constructor.StageConstructorScreen
 import com.colors.collorpuzzle.ui.screens.stage_screen.composable.StageScreen
 import com.colors.collorpuzzle.ui.screens.stage_selector.composable.StageSelectorScreen
 import com.colors.collorpuzzle.ui.shared.stage_dialog.PuzzleDialog
 import com.colors.collorpuzzle.ui.theme.ColorPuzzleTheme
+
 
 private const val TAG = "MainActivity"
 
@@ -34,7 +41,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             ColorPuzzleTheme {
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.Companion.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
                     NavigationComponent()
@@ -49,7 +56,7 @@ class MainActivity : ComponentActivity() {
         NavHost(navController = navController, startDestination = MainMenu.route) {
             composable(route = MainMenu.route) {
                 ShowMainMenu(
-                    Modifier.fillMaxSize(),
+                    Modifier.Companion.fillMaxSize(),
                     playClicked = {
                         navController.navigate(StageSelector.route)
                     },
@@ -78,7 +85,7 @@ class MainActivity : ComponentActivity() {
                         remember(entry) { navController.getBackStackEntry(GameScreen.routeWithArgs) }
                     val stageName = parentEntry.arguments?.getString(GameScreen.stageName) ?: ""
                     StageScreen(
-                        modifier = Modifier, stageName = stageName,
+                        modifier = Modifier.Companion, stageName = stageName,
                         backClick = {
                             navController.navigateUp()
                         },
@@ -103,7 +110,7 @@ class MainActivity : ComponentActivity() {
                         dismissClick = {
                             // TODO double check
                             navController.navigate(GameScreen.GameMatrix.route) {
-                                popUpTo(GameScreen.GameMatrix.route) {inclusive = true }
+                                popUpTo(GameScreen.GameMatrix.route) { inclusive = true }
                             }
                         }
                     )
@@ -112,7 +119,7 @@ class MainActivity : ComponentActivity() {
 
             composable(route = StageSelector.route) {
                 StageSelectorScreen(
-                    modifier = Modifier,
+                    modifier = Modifier.Companion,
                     backClick = {
                         navController.navigateUp()
                     },

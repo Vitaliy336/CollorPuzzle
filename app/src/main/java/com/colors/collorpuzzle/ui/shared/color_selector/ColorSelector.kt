@@ -40,7 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.graphics.shapes.CornerRounding
 import androidx.graphics.shapes.RoundedPolygon
 import androidx.graphics.shapes.toPath
-import com.colors.collorpuzzle.ui.screens.CellType
+import com.colors.collorpuzzle.data.CellType
 import kotlinx.coroutines.delay
 
 @Composable

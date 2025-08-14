@@ -1,36 +1,36 @@
-package com.colors.collorpuzzle.ui.screens
+package com.colors.collorpuzzle.data
 
 import androidx.compose.ui.graphics.Color
 
 enum class CellType {
     RED_CELL {
         override val color: Int = 1
-        override val colorValue: Color = Color.Red
+        override val colorValue: Color = Color.Companion.Red
         override val colorName: String = "Red"
     },
     GREEN_CELL {
         override val color: Int = 2
-        override val colorValue: Color = Color.Green
+        override val colorValue: Color = Color.Companion.Green
         override val colorName: String = "Green"
     },
     BLUE_CELL {
         override val color: Int = 3
-        override val colorValue: Color = Color.Blue
+        override val colorValue: Color = Color.Companion.Blue
         override val colorName: String = "BLUE"
     },
     YELLOW_CELL {
         override val color: Int = 4
-        override val colorValue: Color = Color.Yellow
+        override val colorValue: Color = Color.Companion.Yellow
         override val colorName: String = "Yellow"
     },
     BARRIER_CELL {
         override val color: Int = -1
-        override val colorValue: Color = Color.Black
+        override val colorValue: Color = Color.Companion.Black
         override val colorName: String = "Barrier"
     },
     EMPTY_CELL {
         override val color: Int = -2
-        override val colorValue: Color = Color.Gray
+        override val colorValue: Color = Color.Companion.Gray
         override val colorName: String = "Empty_Constructor_Cell"
     };
 

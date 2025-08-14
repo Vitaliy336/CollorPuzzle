@@ -3,8 +3,8 @@ package com.colors.collorpuzzle.ui.screens.stage_constructor.view_model
 import androidx.lifecycle.ViewModel
 import com.colors.collorpuzzle.data.Matrix
 import com.colors.collorpuzzle.data.deepMatrixCopy
-import com.colors.collorpuzzle.ui.screens.CellType
-import com.colors.collorpuzzle.ui.screens.stage_constructor.ConstructorIntent
+import com.colors.collorpuzzle.data.CellType
+import com.colors.collorpuzzle.ui.screens.stage_constructor.view_model.ConstructorIntent
 import com.colors.collorpuzzle.ui.shared.color_selector.ColorSelector
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

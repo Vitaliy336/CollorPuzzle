@@ -1,7 +1,5 @@
 package com.colors.collorpuzzle.data
 
-import com.colors.collorpuzzle.ui.screens.CellType
-
 
 typealias Matrix = Array<IntArray>
 
