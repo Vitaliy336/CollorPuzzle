@@ -5,5 +5,5 @@ sealed class ConstructorIntent {
     data class UpdateSelectedColor(val color: Int) : ConstructorIntent()
     data class SelectColorToFillPalette(val color: Int) : ConstructorIntent()
     object ResetConstructor : ConstructorIntent()
-    object SaveStage : ConstructorIntent()
+    object ExportStage : ConstructorIntent()
 }

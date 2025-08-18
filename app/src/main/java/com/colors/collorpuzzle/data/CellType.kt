@@ -4,38 +4,38 @@ import androidx.compose.ui.graphics.Color
 
 enum class CellType {
     RED_CELL {
-        override val color: Int = 1
-        override val colorValue: Color = Color.Companion.Red
+        override val colorValue: Int = 1
+        override val color: Color = Color.Companion.Red
         override val colorName: String = "Red"
     },
     GREEN_CELL {
-        override val color: Int = 2
-        override val colorValue: Color = Color.Companion.Green
+        override val colorValue: Int = 2
+        override val color: Color = Color.Companion.Green
         override val colorName: String = "Green"
     },
     BLUE_CELL {
-        override val color: Int = 3
-        override val colorValue: Color = Color.Companion.Blue
+        override val colorValue: Int = 3
+        override val color: Color = Color.Companion.Blue
         override val colorName: String = "BLUE"
     },
     YELLOW_CELL {
-        override val color: Int = 4
-        override val colorValue: Color = Color.Companion.Yellow
+        override val colorValue: Int = 4
+        override val color: Color = Color.Companion.Yellow
         override val colorName: String = "Yellow"
     },
     BARRIER_CELL {
-        override val color: Int = -1
-        override val colorValue: Color = Color.Companion.Black
+        override val colorValue: Int = -1
+        override val color: Color = Color.Companion.Black
         override val colorName: String = "Barrier"
     },
     EMPTY_CELL {
-        override val color: Int = -2
-        override val colorValue: Color = Color.Companion.Gray
+        override val colorValue: Int = -2
+        override val color: Color = Color.Companion.Gray
         override val colorName: String = "Empty_Constructor_Cell"
     };
 
-    abstract val color: Int
-    abstract val colorValue: Color
+    abstract val colorValue: Int
+    abstract val color: Color
     abstract val colorName: String
 
     companion object {

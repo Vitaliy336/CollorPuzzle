@@ -128,7 +128,7 @@ fun PaletteItem(
             .clip(shape = RoundedCornerShape(20f))
             .border(width = 1.dp, color = Color.Gray, shape = RoundedCornerShape(20f))
             .size(24.dp)
-            .background(color = color.colorValue)
+            .background(color = color.color)
     )
 }
 

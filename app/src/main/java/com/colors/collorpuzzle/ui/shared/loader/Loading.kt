@@ -60,7 +60,7 @@ fun ShowLoader(
         ) {
             var delay = 0
             cubeColors.forEach {
-                JumpingBox(delay, it.colorValue)
+                JumpingBox(delay, it.color)
                 delay += 100
             }
         }

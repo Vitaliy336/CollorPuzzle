@@ -1,7 +1,24 @@
 package com.colors.collorpuzzle.data
 
+import android.util.Log
+
 
 typealias Matrix = Array<IntArray>
+
+
+fun Matrix.hasEmptyCells(): Boolean {
+    return this.any { intArray -> intArray.any { number -> number == CellType.EMPTY_CELL.colorValue } }
+}
+
+fun Matrix.isSingleColorPalette(color: Int): Boolean =
+    !this.any { intArr -> intArr.any { it != color } }
+
+fun Matrix.logMatrix() {
+    Log.d("Matrix", "printing matrix...")
+    this.forEach { arr ->
+        Log.d("Matrix", "${arr.contentToString()},")
+    }
+}
 
 class PaletteAlgorithm {
     companion object {
@@ -41,7 +58,7 @@ class PaletteAlgorithm {
                 !rowInbounds || !cellInbounds -> return
                 visitedBranches.contains(cellName) -> return
                 grid[sCell][sRow] != color -> return
-                color == CellType.BARRIER_CELL.color -> return // TODO double check barrier handling
+                color == CellType.BARRIER_CELL.colorValue -> return // TODO double check barrier handling
                 else -> {
                     visitedBranches.add(cellName)
                     grid[sCell][sRow] = newColor
@@ -52,21 +69,6 @@ class PaletteAlgorithm {
                 }
             }
         }
-
-        fun showGrid(grid: Array<IntArray>) { // print matrix
-            grid.forEach {
-                print("[")
-                it.forEach {
-                    print("$it, ")
-                }
-                print("]")
-                println()
-            }
-        }
-
-        fun isSingleColorPalette(color: Int, grid: Matrix): Boolean =
-            !grid.any { intArr -> intArr.any { it != color } }
-
     }
 }
 

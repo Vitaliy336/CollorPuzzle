@@ -18,7 +18,7 @@ fun ColorToComposable(modifier: Modifier = Modifier, cellType: CellType) {
     Text(
         text = buildAnnotatedString {
             withStyle(style = SpanStyle(color = Color.Gray)) { append(text = stringResource(R.string.turn_all_into)) }
-            withStyle(style = SpanStyle(color = cellType.colorValue)) { append(text = cellType.colorName) }
+            withStyle(style = SpanStyle(color = cellType.color)) { append(text = cellType.colorName) }
         },
         modifier = modifier.padding(
             start = 16.dp, end = 16.dp,

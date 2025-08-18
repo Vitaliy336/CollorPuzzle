@@ -248,7 +248,7 @@ fun StageScreenPreview() {
         modifier = Modifier,
         restartClick = {},
         cellClick = { x, y, color -> },
-        colorToPaint = CellType.GREEN_CELL.color,
+        colorToPaint = CellType.GREEN_CELL.colorValue,
         attemptsCount = 3,
         selectColorClick = {},
         selectedColor = 0,

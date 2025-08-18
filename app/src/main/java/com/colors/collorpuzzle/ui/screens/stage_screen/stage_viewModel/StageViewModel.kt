@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.colors.collorpuzzle.data.Matrix
 import com.colors.collorpuzzle.data.PaletteAlgorithm
 import com.colors.collorpuzzle.data.deepMatrixCopy
+import com.colors.collorpuzzle.data.isSingleColorPalette
 import com.colors.collorpuzzle.data.local.PuzzleDataStore
 import com.colors.collorpuzzle.data.model.Stage
 import com.colors.collorpuzzle.data.repo.RemoteConfigRepo
@@ -35,6 +36,7 @@ class StageViewModel(
             val isCleared: Boolean = false,
             val isRunOfAttempts: Boolean = false,
         ) : GameScreenState()
+
         object Loading : GameScreenState()
         object Error : GameScreenState()
     }
@@ -47,6 +49,7 @@ class StageViewModel(
                 stageIntent.y,
                 stageIntent.color
             )
+
             is StageIntent.InitStage -> getStageData(stageIntent.name)
             StageIntent.RestartStage -> resetStage()
         }
@@ -96,9 +99,8 @@ class StageViewModel(
             )
             attemptsCount--
             when {
-                PaletteAlgorithm.isSingleColorPalette(
+                matrixToPlayWith.isSingleColorPalette(
                     color = stageData.colorToPaint,
-                    grid = matrixToPlayWith
                 ) -> { // check matrix colors
                     _gameScreenFlow.update {
                         it as GameScreenState.UpdateGameScreen

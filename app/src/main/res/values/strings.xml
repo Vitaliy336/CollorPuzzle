@@ -14,8 +14,14 @@
     <string name="dialog_stage_failed_msg">No attempts left</string>
     <string name="constructor_color_to_fill_selected">Fill palette with</string>
     <string name="constructor_reset_palette">Reset Palette</string>
-    <string name="save_stage">Save Stage</string>
+    <string name="save_stage">Export Stage</string>
     <string name="dialog_color_picker_title">Select Color to fill the Palette</string>
     <string name="dialog_color_picker_confirm">Confirm</string>
     <string name="dialog_color_picker_cancel">Cancel</string>
+    <string name="stage_export_error_empty_cell">Palette should not contain empty cells</string>
+    <string name="stage_export_error_fill_color_is_not_selected">Color to fill the palette is not selected</string>
+    <string name="stage_export_error_single_color">Palette cannot consist of only one color</string>
+    <string name="stage_export_success">Your stage was copied to clipboard</string>
+    <string name="export_stage_close">Close</string>
+    <string name="export_stage_ok">Got it</string>
 </resources>

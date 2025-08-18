@@ -106,7 +106,7 @@ fun ColorSelector(
         horizontalArrangement = Arrangement.Start,
         modifier = modifier.fillMaxWidth()
     ) {
-        val isSelected = cellType.color == selectedColor
+        val isSelected = cellType.colorValue == selectedColor
 
         Box(
             modifier = modifier
@@ -118,9 +118,9 @@ fun ColorSelector(
                 )
                 .padding(1.dp)
                 .clip(CircleShape)
-                .background(color = cellType.colorValue)
+                .background(color = cellType.color)
                 .clickable {
-                    clickListener(cellType.color)
+                    clickListener(cellType.colorValue)
                 })
 
         if (isSelected) {

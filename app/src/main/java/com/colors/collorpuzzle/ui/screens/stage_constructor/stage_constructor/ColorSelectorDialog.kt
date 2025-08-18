@@ -190,9 +190,9 @@ private fun ColorBox(
                 shape = RoundedCornerShape(20)
             )
             .clickable(onClick = {
-                updateSelectedColorClick(cellType.color)
+                updateSelectedColorClick(cellType.colorValue)
             })
-            .background(color = cellType.colorValue)
+            .background(color = cellType.color)
     )
 }
 

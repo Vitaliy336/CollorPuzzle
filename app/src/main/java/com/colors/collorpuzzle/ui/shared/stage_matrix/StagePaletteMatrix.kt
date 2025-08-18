@@ -75,12 +75,12 @@ fun MatrixItemBox(
             .height(cellHeight)
             .padding(1.dp)
             .clip(shape = RoundedCornerShape(5.dp))
-            .background(cellType.colorValue)
+            .background(cellType.color)
             .clickable {
                 Toast
                     .makeText(context, "x-> $posX, y -> $posY", Toast.LENGTH_SHORT)
                     .show()
-                itemClick(posX, posY, cellType.color)
+                itemClick(posX, posY, cellType.colorValue)
             }
     ) {
         Text(text = "$posX,$posY")

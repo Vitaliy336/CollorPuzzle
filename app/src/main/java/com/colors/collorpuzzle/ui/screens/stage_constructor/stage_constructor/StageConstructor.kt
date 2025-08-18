@@ -1,5 +1,7 @@
 package com.colors.collorpuzzle.ui.screens.stage_constructor.stage_constructor
 
+import android.content.ClipData
+import android.os.PersistableBundle
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -28,30 +30,37 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.ClipEntry
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.colors.collorpuzzle.R
-import com.colors.collorpuzzle.data.Matrix
 import com.colors.collorpuzzle.data.CellType
+import com.colors.collorpuzzle.data.Matrix
+import com.colors.collorpuzzle.ui.screens.stage_constructor.view_model.ConstructorData
 import com.colors.collorpuzzle.ui.screens.stage_constructor.view_model.ConstructorIntent
 import com.colors.collorpuzzle.ui.screens.stage_constructor.view_model.ConstructorIntent.PaletteClick
 import com.colors.collorpuzzle.ui.screens.stage_constructor.view_model.ConstructorIntent.SelectColorToFillPalette
 import com.colors.collorpuzzle.ui.screens.stage_constructor.view_model.StageConstructorViewModel
-import com.colors.collorpuzzle.ui.screens.stage_constructor.view_model.StageConstructorViewModel.ConstructorData
+import com.colors.collorpuzzle.ui.screens.stage_constructor.view_model.StageConstructorViewModel.ExportState
 import com.colors.collorpuzzle.ui.shared.color_selector.ColorsPalette
 import com.colors.collorpuzzle.ui.shared.control_components.ImageButtonWithTextComposable
 import com.colors.collorpuzzle.ui.shared.stage_matrix.BuildStageMatrix
 import org.koin.compose.viewmodel.koinViewModel
+
+const val customPalette = "custom_palette"
 
 @Composable
 fun StageConstructorScreen(backClick: () -> Unit) {
     val vm: StageConstructorViewModel = koinViewModel<StageConstructorViewModel>()
 
     val shouldShowDialog = rememberSaveable { mutableStateOf(false) }
+    val showExportDialog = rememberSaveable { mutableStateOf(false) }
     val constructorState = vm.constructorStateFlow.collectAsState()
+    val exportState = vm.exportState.collectAsState()
 
     ConstructorTemplate(
         modifier = Modifier
@@ -70,8 +79,20 @@ fun StageConstructorScreen(backClick: () -> Unit) {
         paletteClick = { x, y, cellColor ->
             vm.handleIntent(PaletteClick(x, y, cellColor))
         },
-        backClick = backClick
+        backClick = backClick,
+        exportStageClick = {
+            vm.handleIntent(ConstructorIntent.ExportStage)
+            showExportDialog.value = true
+        }
     )
+
+    if (showExportDialog.value) {
+        ShowExportDialog(
+            exportState.value,
+            closeDialogClick = {
+                showExportDialog.value = false
+            })
+    }
 
     if (shouldShowDialog.value) {
         ShowColorPickerDialog(
@@ -85,6 +106,45 @@ fun StageConstructorScreen(backClick: () -> Unit) {
             }
         )
     }
+}
+
+@Composable
+private fun ShowExportDialog(
+    value: ExportState,
+    closeDialogClick: () -> Unit,
+) {
+    when (value) {
+        ExportState.Initial -> {} // do nothing
+        is ExportState.Error -> {
+            ExportDialog(
+                msg = stringResource(value.error),
+                btnText = stringResource(R.string.export_stage_ok),
+                dismissRequest = closeDialogClick
+            )
+        }
+
+        is ExportState.Success -> {
+            CopyStageJsonToClipBoard(value.json)
+            ExportDialog(
+                msg = stringResource(R.string.stage_export_success),
+                btnText = stringResource(R.string.export_stage_close),
+                dismissRequest = closeDialogClick
+            )
+        }
+    }
+}
+
+@Composable
+private fun CopyStageJsonToClipBoard(stageJson: String) {
+    val localClipboardManager = LocalClipboardManager.current
+    val clipData = ClipData.newPlainText(customPalette, stageJson)
+        .apply {
+            description.extras = PersistableBundle().apply {
+                putBoolean("android.content.extra.IS_SENSITIVE", true)
+            }
+        }
+    localClipboardManager.setClip(ClipEntry(clipData = clipData))
+
 }
 
 @Composable
@@ -109,6 +169,7 @@ private fun ConstructorTemplate(
     paletteClick: (x: Int, y: Int, cellColor: Int) -> Unit,
     resetPaletteClick: () -> Unit,
     backClick: () -> Unit,
+    exportStageClick: () -> Unit,
 ) {
 
     Row(modifier = modifier) {
@@ -138,7 +199,7 @@ private fun ConstructorTemplate(
                     componentText = stringResource(R.string.save_stage),
                     painter = painterResource(R.drawable.ic_save),
                     buttonClick = {
-
+                        exportStageClick.invoke()
                     }
                 )
                 ColorToFillPaletteSelector(
@@ -226,7 +287,7 @@ private fun ColorToFillPaletteSelector(
                 )
                 .fillMaxSize()
                 .clip(shape = RoundedCornerShape(20f))
-                .background(color = CellType.getCellColor(colorToFillPalette).colorValue)
+                .background(color = CellType.getCellColor(colorToFillPalette).color)
                 .clickable(onClick = {
                     colorSelectorClick.invoke()
                 })
@@ -275,21 +336,23 @@ fun PaletteConstructor(
 private fun ConstructorPreview() {
 
     val initialConstructorMatrix by lazy {
-        Array(8) { IntArray(10) { CellType.EMPTY_CELL.color } } // default matrix 8 rows and 10 columns maybe add custom sizes in future
+        Array(8) { IntArray(10) { CellType.EMPTY_CELL.colorValue } } // default matrix 8 rows and 10 columns maybe add custom sizes in future
     }
 
     ConstructorTemplate(
         modifier = Modifier,
         constructorData = ConstructorData(
             matrix = initialConstructorMatrix,
-            colorToFillPalette = CellType.GREEN_CELL.color,
-            selectedColor = CellType.EMPTY_CELL.color
+            colorToFillPalette = CellType.GREEN_CELL.colorValue,
+            selectedColor = CellType.EMPTY_CELL.colorValue
         ),
         colorSelectorClick = {},
         resetPaletteClick = {},
         colorToFillPaletteClick = {},
         paletteClick = { x, y, color -> },
-        backClick = {})
+        backClick = {},
+        exportStageClick = {}
+    )
 }
 
 @Preview(showBackground = true)
