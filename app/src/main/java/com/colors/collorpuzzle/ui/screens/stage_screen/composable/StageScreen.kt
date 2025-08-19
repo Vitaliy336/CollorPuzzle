@@ -46,8 +46,9 @@ fun StageScreen(
     modifier: Modifier, stageName: String,
     backClick: () -> Unit,
     toDialog: (Boolean) -> Unit,
-    vm: StageViewModel = koinViewModel<StageViewModel>(),
+    stageData: String = ""
 ) {
+    val vm: StageViewModel = koinViewModel<StageViewModel>()
     LaunchedEffect(key1 = Unit) {
         vm.handleIntent(StageIntent.InitStage(stageName))
     }
@@ -57,7 +58,7 @@ fun StageScreen(
     val selectedColor = vm.selectedColorState.collectAsStateWithLifecycle()
 
     when (stageScreenState.value) {
-        StageViewModel.GameScreenState.Error -> TODO()
+        StageViewModel.GameScreenState.Error -> {}
         StageViewModel.GameScreenState.Loading -> Loading()
         is StageViewModel.GameScreenState.UpdateGameScreen -> {
 

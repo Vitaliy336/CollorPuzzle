@@ -25,7 +25,6 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.currentCompositionLocalContext
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,6 +48,7 @@ fun ShowMainMenu(
     playClicked: () -> Unit,
     randomStageClicked: () -> Unit,
     constructorClicked: () -> Unit,
+    launchCustomStage: (String) -> Unit,
 ) {
 
     val vm = koinViewModel<MainMenuViewModel>()
@@ -104,7 +104,7 @@ fun ShowMainMenu(
                 }
 
                 is MainMenuViewModel.PaletteState.Success -> {
-                    // proceed to palette screen
+                    launchCustomStage(currentState.json)
                 }
             }
         }

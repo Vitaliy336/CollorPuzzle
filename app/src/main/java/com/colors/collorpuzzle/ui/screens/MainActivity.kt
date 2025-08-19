@@ -18,6 +18,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.dialog
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import com.colors.collorpuzzle.CustomGameScreen
 import com.colors.collorpuzzle.DialogState
 import com.colors.collorpuzzle.GameScreen
 import com.colors.collorpuzzle.MainMenu
@@ -26,6 +27,7 @@ import com.colors.collorpuzzle.StageConstructor
 import com.colors.collorpuzzle.StageSelector
 import com.colors.collorpuzzle.ui.screens.main_menu.composable.ShowMainMenu
 import com.colors.collorpuzzle.ui.screens.stage_constructor.stage_constructor.StageConstructorScreen
+import com.colors.collorpuzzle.ui.screens.stage_constructor.stage_constructor.customPalette
 import com.colors.collorpuzzle.ui.screens.stage_screen.composable.StageScreen
 import com.colors.collorpuzzle.ui.screens.stage_selector.composable.StageSelectorScreen
 import com.colors.collorpuzzle.ui.shared.stage_dialog.PuzzleDialog
@@ -65,6 +67,9 @@ class MainActivity : ComponentActivity() {
                     },
                     constructorClicked = {
                         navController.navigate(StageConstructor.route)
+                    },
+                    launchCustomStage = {
+                        navController.navigateToCustomGameScreen(it)
                     })
             }
 
@@ -85,7 +90,8 @@ class MainActivity : ComponentActivity() {
                         remember(entry) { navController.getBackStackEntry(GameScreen.routeWithArgs) }
                     val stageName = parentEntry.arguments?.getString(GameScreen.stageName) ?: ""
                     StageScreen(
-                        modifier = Modifier.Companion, stageName = stageName,
+                        modifier = Modifier.Companion,
+                        stageName = stageName,
                         backClick = {
                             navController.navigateUp()
                         },
@@ -128,6 +134,22 @@ class MainActivity : ComponentActivity() {
                         navController.navigateToSelectedStage(name)
                     })
             }
+
+            composable(
+                route = CustomGameScreen.routeWithArgs,
+                arguments = CustomGameScreen.arguments
+            ) { entry ->
+                val parentEntry =
+                    remember(entry) { navController.getBackStackEntry(CustomGameScreen.routeWithArgs) }
+                val stageData = parentEntry.arguments?.getString(CustomGameScreen.stageData) ?: ""
+                StageScreen(
+                    modifier = Modifier.Companion,
+                    stageName = customPalette,
+                    backClick = {},
+                    toDialog = {},
+                    stageData = stageData
+                )
+            }
         }
     }
 
@@ -146,6 +168,12 @@ class MainActivity : ComponentActivity() {
             confirmBtnText = stringResource(R.string.dialog_btn_to_menu),
             dismissBtnText = if (isStageCleared) "" else stringResource(R.string.dialog_btn_restart)
         )
+    }
+
+    private fun NavHostController.navigateToCustomGameScreen(paletteData: String) {
+        this.navigate("${CustomGameScreen.route}/${paletteData}") {
+            launchSingleTop = true
+        }
     }
 
     private fun NavHostController.navigateToSelectedStage(stageName: String) {
