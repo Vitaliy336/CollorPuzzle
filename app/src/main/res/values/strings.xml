@@ -24,4 +24,7 @@
     <string name="stage_export_success">Your stage was copied to clipboard</string>
     <string name="export_stage_close">Close</string>
     <string name="export_stage_ok">Got it</string>
+    <string name="palette_import_label">Insert lvl data here</string>
+    <string name="stage_import_empty_palette_error">Palette data is empty</string>
+    <string name="stage_import_parse_error">Corrupted palette data</string>
 </resources>
