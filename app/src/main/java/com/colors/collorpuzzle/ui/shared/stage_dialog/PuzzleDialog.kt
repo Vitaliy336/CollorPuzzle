@@ -118,7 +118,7 @@ private fun TitleSection(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun PaletteItem(
+fun PaletteItem(
     modifier: Modifier = Modifier,
     color: CellType,
 ) {
