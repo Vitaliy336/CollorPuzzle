@@ -2,11 +2,10 @@ package com.colors.collorpuzzle.ui.screens.stage_selector.view_model
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.colors.collorpuzzle.data.local.PuzzleDataStore
+import com.colors.collorpuzzle.data.local.IPuzzleDataStore
 import com.colors.collorpuzzle.data.repo.RemoteConfigRepo
 import com.colors.collorpuzzle.data.repo.RemoteConfigRepoImpl.ConfigState
 import com.colors.collorpuzzle.data.repo.RemoteConfigRepoImpl.ConfigState.Success
-import com.colors.collorpuzzle.ui.screens.stage_selector.view_model.StageSelectionIntent
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -18,7 +17,7 @@ import kotlinx.coroutines.launch
 
 class StageSelectorViewModel(
     repo: RemoteConfigRepo,
-    localStorage: PuzzleDataStore,
+    localStorage: IPuzzleDataStore,
 ) : ViewModel() {
 
     private val _levelsFlow = MutableStateFlow<LevelsState>(LevelsState.Loading)
