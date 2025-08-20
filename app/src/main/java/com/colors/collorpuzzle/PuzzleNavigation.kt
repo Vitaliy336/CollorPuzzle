@@ -28,9 +28,12 @@ object GameScreen : AppDestination {
     object GameDialog : AppDestination {
         override val route: String = "dialog_screen"
         const val dialogState = "dialog_state"
-        val routeWithArgs = "${this.route}/{${dialogState}}"
+        const val stageName = "stage_name"
+        val routeWithArgs = "${this.route}/{${dialogState}}/{${stageName}}"
         val dialogArguments = listOf(navArgument(dialogState) {
             type = NavType.EnumType(type = DialogState::class.java)
+        }, navArgument(stageName) {
+            type = NavType.StringType
         })
     }
 }

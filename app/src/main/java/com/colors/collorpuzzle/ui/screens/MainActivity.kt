@@ -96,7 +96,10 @@ class MainActivity : ComponentActivity() {
                             navController.navigateUp()
                         },
                         toDialog = { isCleared ->
-                            navController.openDialog(if (isCleared) DialogState.STAGE_CLEARED else DialogState.OUT_OF_ATTEMPTS)
+                            navController.openDialog(
+                                if (isCleared) DialogState.STAGE_CLEARED else DialogState.OUT_OF_ATTEMPTS,
+                                stageName
+                            )
                         })
                 }
 
@@ -107,11 +110,13 @@ class MainActivity : ComponentActivity() {
                     val parentEntry =
                         remember(entry) { navController.getBackStackEntry(GameScreen.GameDialog.routeWithArgs) }
                     val isCleared = parentEntry.arguments?.get(GameScreen.GameDialog.dialogState)
+                    val stageName = parentEntry.arguments?.get(GameScreen.GameDialog.stageName)
 
                     ShowDialog(
                         isStageCleared = isCleared == DialogState.STAGE_CLEARED,
                         confirmClick = {
-                            navController.popBackStack(StageSelector.route, inclusive = false)
+                            val destinationRoute = if (stageName == customPalette) MainMenu.route else StageConstructor.route
+                            navController.popBackStack(destinationRoute, inclusive = false)
                         },
                         dismissClick = {
                             // TODO double check
@@ -145,8 +150,12 @@ class MainActivity : ComponentActivity() {
                 StageScreen(
                     modifier = Modifier.Companion,
                     stageName = customPalette,
-                    backClick = {},
-                    toDialog = {},
+                    backClick = {
+                        navController.navigateUp()
+                    },
+                    toDialog = {
+                        navController.openDialog(DialogState.STAGE_CLEARED, stageName = customPalette)
+                    },
                     stageData = stageData
                 )
             }
@@ -182,8 +191,8 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun NavHostController.openDialog(dialogState: DialogState) {
-        this.navigate("${GameScreen.GameDialog.route}/${dialogState}") {
+    private fun NavHostController.openDialog(dialogState: DialogState, stageName: String) {
+        this.navigate("${GameScreen.GameDialog.route}/${dialogState}/${stageName}") {
             launchSingleTop = true
         }
     }
