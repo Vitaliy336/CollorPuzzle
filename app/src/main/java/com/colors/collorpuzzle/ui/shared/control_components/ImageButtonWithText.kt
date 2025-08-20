@@ -55,7 +55,7 @@ fun ImageButtonWithTextComposable(
 
 @Composable
 @Preview
-fun RestartPreview() {
+private fun RestartPreview() {
     Surface {
         ImageButtonWithTextComposable(
             buttonClick = {},

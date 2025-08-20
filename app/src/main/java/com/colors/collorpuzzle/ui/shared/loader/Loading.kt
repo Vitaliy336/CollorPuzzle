@@ -70,7 +70,7 @@ fun ShowLoader(
 
 
 @Composable
-fun JumpingBox(
+private fun JumpingBox(
     jumpDelay: Int = 0,
     bgColor: Color,
 ) {
@@ -117,6 +117,6 @@ fun JumpingBox(
 
 @Preview
 @Composable
-fun LoaderPreview() {
+private fun LoaderPreview() {
     ShowLoader(isFinished = {})
 }

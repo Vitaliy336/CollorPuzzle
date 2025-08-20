@@ -30,40 +30,49 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.colors.collorpuzzle.R
 import com.colors.collorpuzzle.data.CellType
-import com.colors.collorpuzzle.data.Matrix
 import com.colors.collorpuzzle.data.CellType.Companion.getCellColor
-import com.colors.collorpuzzle.ui.screens.stage_screen.stage_viewModel.StageIntent
+import com.colors.collorpuzzle.data.Matrix
+import com.colors.collorpuzzle.ui.screens.stage_screen.stage_viewModel.StageIntent.ColorSelect
+import com.colors.collorpuzzle.ui.screens.stage_screen.stage_viewModel.StageIntent.InitStage
+import com.colors.collorpuzzle.ui.screens.stage_screen.stage_viewModel.StageIntent.PaletteCLicked
+import com.colors.collorpuzzle.ui.screens.stage_screen.stage_viewModel.StageIntent.RestartStage
+import com.colors.collorpuzzle.ui.screens.stage_screen.stage_viewModel.StageIntent.StageCleared
 import com.colors.collorpuzzle.ui.screens.stage_screen.stage_viewModel.StageViewModel
+import com.colors.collorpuzzle.ui.screens.stage_screen.stage_viewModel.paletteModes.AbsPaletteMode.GameScreenState
 import com.colors.collorpuzzle.ui.shared.color_selector.ColorsPalette
-import com.colors.collorpuzzle.ui.shared.control_components.MovesLeftComponent
 import com.colors.collorpuzzle.ui.shared.control_components.ImageButtonWithTextComposable
+import com.colors.collorpuzzle.ui.shared.control_components.MovesLeftComponent
 import com.colors.collorpuzzle.ui.shared.stage_matrix.BuildStageMatrix
 import com.colors.collorpuzzle.ui.shared.stage_matrix.ColorToComposable
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun StageScreen(
     modifier: Modifier, stageName: String,
     backClick: () -> Unit,
     toDialog: (Boolean) -> Unit,
-    stageData: String = ""
+    stageData: String = "",
 ) {
-    val vm: StageViewModel = koinViewModel<StageViewModel>()
+    val vm: StageViewModel = koinViewModel<StageViewModel>() {
+        parametersOf(stageName, stageData)
+    }
+
     LaunchedEffect(key1 = Unit) {
-        vm.handleIntent(StageIntent.InitStage(stageName))
+        vm.handleIntent(InitStage)
     }
     val showDialog = rememberSaveable { mutableStateOf(true) }
 
-    val stageScreenState = vm.gameScreenFlow.collectAsStateWithLifecycle()
-    val selectedColor = vm.selectedColorState.collectAsStateWithLifecycle()
+    val stageScreenState = vm.gameScreenState.collectAsStateWithLifecycle()
+    val selectedColor = vm.colorState.collectAsStateWithLifecycle()
 
     when (stageScreenState.value) {
-        StageViewModel.GameScreenState.Error -> {}
-        StageViewModel.GameScreenState.Loading -> Loading()
-        is StageViewModel.GameScreenState.UpdateGameScreen -> {
+        GameScreenState.Error -> {}
+        GameScreenState.Loading -> Loading()
+        is GameScreenState.UpdateGameScreen -> {
 
             val stageValue =
-                (stageScreenState.value as StageViewModel.GameScreenState.UpdateGameScreen)
+                (stageScreenState.value as GameScreenState.UpdateGameScreen)
 
             ShowStageScreen(
                 modifier = modifier,
@@ -71,14 +80,14 @@ fun StageScreen(
                 matrix = stageValue.matrix,
                 attemptsCount = stageValue.attemptsLeft,
                 restartClick = {
-                    vm.handleIntent(StageIntent.RestartStage)
+                    vm.handleIntent(RestartStage)
                 },
                 cellClick = { x, y, color ->
-                    vm.handleIntent(StageIntent.PaletteCLicked(x, y, color))
+                    vm.handleIntent(PaletteCLicked(x, y, color))
                 },
                 selectedColor = selectedColor.value,
                 selectColorClick = { color ->
-                    vm.handleIntent(StageIntent.ColorSelect(color))
+                    vm.handleIntent(ColorSelect(color))
                 },
                 backClick = backClick
             )
@@ -87,6 +96,9 @@ fun StageScreen(
                 if (showDialog.value) {
                     showDialog.value = false
                     toDialog.invoke(stageValue.isCleared)
+                    if (stageValue.isCleared) {
+                        vm.handleIntent(StageCleared)
+                    }
                 }
             }
         }
@@ -94,12 +106,12 @@ fun StageScreen(
 }
 
 @Composable
-fun Loading() {
-
+private fun Loading() {
+    // do nothing for now
 }
 
 @Composable
-fun ShowStageScreen(
+private fun ShowStageScreen(
     modifier: Modifier = Modifier,
     matrix: Matrix,
     colorToPaint: Int,
@@ -182,7 +194,7 @@ fun ShowStageScreen(
 }
 
 @Composable
-fun PalettePuzzleScreen(
+private fun PalettePuzzleScreen(
     modifier: Modifier,
     cellType: CellType,
     matrix: Matrix,
@@ -222,7 +234,7 @@ fun PalettePuzzleScreen(
 }
 
 @Composable
-fun BackButton(
+private fun BackButton(
     backClick: () -> Unit,
     modifier: Modifier,
 ) {

@@ -95,7 +95,7 @@ fun ColorsPalette(
 }
 
 @Composable
-fun ColorSelector(
+private fun ColorSelector(
     modifier: Modifier,
     cellType: CellType,
     selectedColor: Int,
@@ -168,7 +168,7 @@ fun ColorSelector(
 
 @Preview(device = Devices.PIXEL_4_XL)
 @Composable
-fun ColorsPalettePreview() {
+private fun ColorsPalettePreview() {
     val mockedPalette = CellType.getPaletteColors()
     ColorsPalette(
         modifier = Modifier,
@@ -179,7 +179,7 @@ fun ColorsPalettePreview() {
 
 @Preview(device = Devices.PIXEL_4_XL)
 @Composable
-fun ColorsPalettePreviewUnselected() {
+private fun ColorsPalettePreviewUnselected() {
     val mockedPalette = CellType.getPaletteColors()
     ColorsPalette(
         modifier = Modifier,

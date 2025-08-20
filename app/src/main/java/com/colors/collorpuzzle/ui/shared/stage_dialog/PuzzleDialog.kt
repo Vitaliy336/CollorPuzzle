@@ -65,7 +65,7 @@ fun PuzzleDialog(
 }
 
 @Composable
-fun ShowPuzzleDialog(
+private fun ShowPuzzleDialog(
     modifier: Modifier = Modifier,
     dialogText: String,
     isSingleButtonDialog: Boolean,
@@ -96,7 +96,7 @@ fun ShowPuzzleDialog(
 }
 
 @Composable
-fun TitleSection(modifier: Modifier = Modifier) {
+private fun TitleSection(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -118,7 +118,7 @@ fun TitleSection(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun PaletteItem(
+private fun PaletteItem(
     modifier: Modifier = Modifier,
     color: CellType,
 ) {
@@ -133,7 +133,7 @@ fun PaletteItem(
 }
 
 @Composable
-fun MessageSection(modifier: Modifier = Modifier, dialogText: String) {
+private fun MessageSection(modifier: Modifier = Modifier, dialogText: String) {
     Text(
         text = dialogText,
         modifier = modifier
@@ -145,7 +145,7 @@ fun MessageSection(modifier: Modifier = Modifier, dialogText: String) {
 }
 
 @Composable
-fun ActionButtons(
+private fun ActionButtons(
     modifier: Modifier = Modifier,
     isSingleButtonDialog: Boolean,
     confirmClick: () -> Unit,
@@ -169,7 +169,7 @@ fun ActionButtons(
 }
 
 @Composable
-fun ConfirmButton(btnText: String, buttonClick: () -> Unit) {
+private fun ConfirmButton(btnText: String, buttonClick: () -> Unit) {
     Button(onClick = {
         buttonClick()
     }) {
@@ -178,7 +178,7 @@ fun ConfirmButton(btnText: String, buttonClick: () -> Unit) {
 }
 
 @Composable
-fun CancelButton(btnText: String, buttonClick: () -> Unit) {
+private fun CancelButton(btnText: String, buttonClick: () -> Unit) {
     OutlinedButton(onClick = {
         buttonClick()
     }) {
@@ -189,7 +189,7 @@ fun CancelButton(btnText: String, buttonClick: () -> Unit) {
 
 @Composable
 @Preview(device = PIXEL_4_XL)
-fun DialogPreviewSingleButton() {
+private fun DialogPreviewSingleButton() {
     PuzzleDialog(
         dialogTitle = stringResource(R.string.dialog_stage_cleared_msg),
         dismissRequest = {},
@@ -200,7 +200,7 @@ fun DialogPreviewSingleButton() {
 
 @Composable
 @Preview(device = PIXEL_4_XL)
-fun DialogPreviewTwoButtons() {
+private fun DialogPreviewTwoButtons() {
     PuzzleDialog(
         dialogTitle = stringResource(R.string.dialog_stage_failed_msg),
         dismissRequest = {},

@@ -41,7 +41,7 @@ fun MovesLeftComponent(attempts: Int, modifier: Modifier = Modifier) {
 
 @Composable
 @Preview
-fun MovesLeftPreview() {
+private fun MovesLeftPreview() {
     Surface {
         MovesLeftComponent(3)
     }

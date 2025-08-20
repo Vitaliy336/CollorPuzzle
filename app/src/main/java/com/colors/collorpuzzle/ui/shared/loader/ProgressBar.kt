@@ -50,7 +50,7 @@ fun LinearDeterminateIndicator(isFinished: () -> Unit) {
 
 
 // just simulate loading
-suspend fun loadProgress(updateProgress: (Float) -> Unit) {
+private suspend fun loadProgress(updateProgress: (Float) -> Unit) {
     for (i in 1..100) {
         updateProgress((i.toFloat() / 100) * 2)
         delay(10)

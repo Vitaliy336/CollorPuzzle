@@ -37,12 +37,12 @@ fun DrawTriangleShape(color: Long, invert: Boolean) {
 
 @Preview
 @Composable
-fun TrianglePreview(color: Long = 0xFFFFFF00) {
+private fun TrianglePreview(color: Long = 0xFFFFFF00) {
     DrawTriangleShape(color = color, false)
 }
 
 @Preview
 @Composable
-fun TrianglePreviewInverted(color: Long = 0xFFFFFF00) {
+private fun TrianglePreviewInverted(color: Long = 0xFFFFFF00) {
     DrawTriangleShape(color = color, true)
 }

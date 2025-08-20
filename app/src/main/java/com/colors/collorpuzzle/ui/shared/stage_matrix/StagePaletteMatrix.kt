@@ -58,7 +58,7 @@ fun BuildStageMatrix(
 }
 
 @Composable
-fun MatrixItemBox(
+private fun MatrixItemBox(
     modifier: Modifier,
     cellWidth: Dp,
     cellHeight: Dp,
@@ -90,7 +90,7 @@ fun MatrixItemBox(
 
 @Preview(device = Devices.PIXEL_4_XL)
 @Composable
-fun BuildStageMatrixPreview() {
+private fun BuildStageMatrixPreview() {
     BuildStageMatrix(
         Modifier, 1200.dp, 1449.dp, arrayOf(
             intArrayOf(1, 2, 3, 1, 4, 1, 3, 4, 1, 2),

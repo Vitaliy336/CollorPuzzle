@@ -85,7 +85,7 @@ fun StageSelectorScreen(
 }
 
 @Composable
-fun ShowStages(
+private fun ShowStages(
     stagesData: List<StagesData>,
     modifier: Modifier = Modifier,
     backClick: () -> Unit,
@@ -130,7 +130,7 @@ fun ShowStages(
 }
 
 @Composable
-fun BackButton(
+private fun BackButton(
     backClick: () -> Unit,
     modifier: Modifier,
 ) {
@@ -148,7 +148,7 @@ fun BackButton(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun StagesList(
+private fun StagesList(
     stagesList: List<StagesData>,
     stageClick: (stageName: String) -> Unit,
 ) {
@@ -165,7 +165,7 @@ fun StagesList(
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun StagesRow(
+private fun StagesRow(
     modifier: Modifier = Modifier,
     stageHeader: String,
     stageItems: List<StagesData.StageData> = listOf(),
@@ -222,7 +222,7 @@ private fun CategoryHeader(
 }
 
 @Composable
-fun StageItem(
+private fun StageItem(
     stageName: String,
     stageIndex: String,
     isCleared: Boolean,
@@ -253,7 +253,7 @@ fun StageItem(
 
 @Preview
 @Composable
-fun StagesRowPreview() {
+private fun StagesRowPreview() {
     StagesRow(
         stageItems = listOf(),
         stageHeader = "name1",
@@ -263,7 +263,7 @@ fun StagesRowPreview() {
 
 @Preview
 @Composable
-fun ShowStagesListPreview() {
+private fun ShowStagesListPreview() {
     StageSelectorScreen(
         modifier = Modifier.fillMaxSize(),
         backClick = {},
@@ -273,7 +273,7 @@ fun ShowStagesListPreview() {
 
 @Preview
 @Composable
-fun StageItemPreview() {
+private fun StageItemPreview() {
     StageItem(
         modifier = Modifier,
         stageName = "some name",
@@ -284,7 +284,7 @@ fun StageItemPreview() {
 
 @Preview
 @Composable
-fun StageItemPreviewCleared() {
+private fun StageItemPreviewCleared() {
     StageItem(
         modifier = Modifier,
         stageName = "some name 2",

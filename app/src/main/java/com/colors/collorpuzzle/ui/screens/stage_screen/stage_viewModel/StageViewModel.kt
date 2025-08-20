@@ -2,44 +2,36 @@ package com.colors.collorpuzzle.ui.screens.stage_screen.stage_viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.colors.collorpuzzle.data.Matrix
-import com.colors.collorpuzzle.data.PaletteAlgorithm
-import com.colors.collorpuzzle.data.deepMatrixCopy
-import com.colors.collorpuzzle.data.isSingleColorPalette
-import com.colors.collorpuzzle.data.local.PuzzleDataStore
-import com.colors.collorpuzzle.data.model.Stage
+import com.colors.collorpuzzle.data.local.IPuzzleDataStore
 import com.colors.collorpuzzle.data.repo.RemoteConfigRepo
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
+import com.colors.collorpuzzle.ui.screens.stage_constructor.stage_constructor.customPalette
+import com.colors.collorpuzzle.ui.screens.stage_screen.stage_viewModel.paletteModes.CustomPalette
+import com.colors.collorpuzzle.ui.screens.stage_screen.stage_viewModel.paletteModes.DefaultMode
+import com.colors.collorpuzzle.ui.screens.stage_screen.stage_viewModel.paletteModes.AbsPaletteMode
+import com.google.gson.Gson
 
 class StageViewModel(
     private val repo: RemoteConfigRepo,
-    private val localStorage: PuzzleDataStore,
+    private val localStorage: IPuzzleDataStore,
+    private val gson: Gson,
+    private val stageName: String,
+    private val stageData: String,
 ) : ViewModel() {
 
-    private lateinit var stageData: Stage
-    private lateinit var matrixToPlayWith: Matrix
-    private var attemptsCount: Int = 0
-    private val _selectedColor = MutableStateFlow<Int>(0)
-    private val _gameScreenFlow = MutableStateFlow<GameScreenState>(GameScreenState.Loading)
+    private val paletteMode: AbsPaletteMode by lazy {
+        when (stageName) {
+            customPalette ->
+                CustomPalette(
+                    stageJson = stageData,
+                    gson = gson
+                )
 
-    val gameScreenFlow: StateFlow<GameScreenState> = _gameScreenFlow
-    val selectedColorState: StateFlow<Int> = _selectedColor
-
-    sealed class GameScreenState {
-        data class UpdateGameScreen(
-            val colorToPaint: Int,
-            val matrix: Matrix,
-            val attemptsLeft: Int,
-            val isCleared: Boolean = false,
-            val isRunOfAttempts: Boolean = false,
-        ) : GameScreenState()
-
-        object Loading : GameScreenState()
-        object Error : GameScreenState()
+            else -> DefaultMode(stageName = stageName, localStorage = localStorage, repo = repo)
+        }
     }
+
+    val gameScreenState = paletteMode.gameScreenState
+    val colorState = paletteMode.colorState
 
     fun handleIntent(stageIntent: StageIntent) {
         when (stageIntent) {
@@ -50,87 +42,29 @@ class StageViewModel(
                 stageIntent.color
             )
 
-            is StageIntent.InitStage -> getStageData(stageIntent.name)
+            is StageIntent.InitStage -> initStage()
             StageIntent.RestartStage -> resetStage()
+            StageIntent.StageCleared -> stageCleared()
         }
     }
 
     private fun updateSelectedColor(color: Int) {
-        _selectedColor.value = color
+        paletteMode.updateSelectedColor(color)
     }
 
-    private fun getStageData(stageName: String) {
-        val stages = repo.getConfigs()
-        val stage: Stage? = stages.flatMap { it.stages }.find { it.stageName == stageName }
-        if (stage != null) {
-            stageData = stage
-            matrixToPlayWith = stageData.stagePalette.deepMatrixCopy()
-            attemptsCount = stage.stageAttempts
-            _gameScreenFlow.value = GameScreenState.UpdateGameScreen(
-                colorToPaint = stageData.colorToPaint,
-                matrix = matrixToPlayWith, attemptsLeft = attemptsCount
-            )
-        } else {
-            _gameScreenFlow.value = GameScreenState.Error
-        }
+    private fun initStage() {
+        paletteMode.initPaletteData()
     }
 
     private fun resetStage() {
-        matrixToPlayWith = stageData.stagePalette.deepMatrixCopy()
-        attemptsCount = stageData.stageAttempts
-        _gameScreenFlow.value = GameScreenState.UpdateGameScreen(
-            colorToPaint = stageData.colorToPaint,
-            matrix = matrixToPlayWith,
-            attemptsLeft = attemptsCount
-        )
+        paletteMode.resetScreen()
     }
 
     private fun cellClick(posX: Int, posY: Int, color: Int) {
-        if (_selectedColor.value == 0 || _selectedColor.value == color) {
-            // no actions needed if color is not selected or user clicked on the same color cell
-            return
-        } else {
-            PaletteAlgorithm.floodFill(
-                grid = matrixToPlayWith,
-                posX = posX,
-                posY = posY,
-                oldColor = color,
-                newColorValue = _selectedColor.value
-            )
-            attemptsCount--
-            when {
-                matrixToPlayWith.isSingleColorPalette(
-                    color = stageData.colorToPaint,
-                ) -> { // check matrix colors
-                    _gameScreenFlow.update {
-                        it as GameScreenState.UpdateGameScreen
-                        it.copy(isCleared = true)
-                    }
-                    stageCleared(stageData.stageName)
-                }
-
-                attemptsCount < 0 -> {
-                    _gameScreenFlow.update {
-                        it as GameScreenState.UpdateGameScreen
-                        it.copy(isRunOfAttempts = true)
-                    }
-                }
-
-                else -> {
-                    _gameScreenFlow.update {
-                        (it as GameScreenState.UpdateGameScreen).copy(
-                            matrix = matrixToPlayWith,
-                            attemptsLeft = attemptsCount
-                        )
-                    }
-                }
-            }
-        }
+        paletteMode.cellClick(posX = posX, posY = posY, color = color)
     }
 
-    private fun stageCleared(stageName: String) {
-        viewModelScope.launch {
-            localStorage.addClearedLvl(stageName)
-        }
+    private fun stageCleared() {
+        paletteMode.onStageCleared(viewModelScope)
     }
 }
