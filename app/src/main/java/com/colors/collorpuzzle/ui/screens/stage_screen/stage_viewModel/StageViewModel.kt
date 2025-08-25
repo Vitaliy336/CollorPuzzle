@@ -4,10 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.colors.collorpuzzle.data.local.IPuzzleDataStore
 import com.colors.collorpuzzle.data.repo.RemoteConfigRepo
+import com.colors.collorpuzzle.ui.screens.randomPalette
 import com.colors.collorpuzzle.ui.screens.stage_constructor.stage_constructor.customPalette
 import com.colors.collorpuzzle.ui.screens.stage_screen.stage_viewModel.paletteModes.CustomPalette
 import com.colors.collorpuzzle.ui.screens.stage_screen.stage_viewModel.paletteModes.DefaultMode
 import com.colors.collorpuzzle.ui.screens.stage_screen.stage_viewModel.paletteModes.AbsPaletteMode
+import com.colors.collorpuzzle.ui.screens.stage_screen.stage_viewModel.paletteModes.RandomPalette
 import com.google.gson.Gson
 
 class StageViewModel(
@@ -25,6 +27,8 @@ class StageViewModel(
                     stageJson = stageData,
                     gson = gson
                 )
+
+            randomPalette -> RandomPalette()
 
             else -> DefaultMode(stageName = stageName, localStorage = localStorage, repo = repo)
         }

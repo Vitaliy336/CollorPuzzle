@@ -41,8 +41,10 @@ object GameScreen : AppDestination {
 object CustomGameScreen : AppDestination {
     override val route: String = "custom_stage"
     const val stageData = "stage_data"
-    val routeWithArgs = "${route}/{${stageData}}"
-    val arguments = listOf(navArgument(stageData) { type = NavType.StringType })
+    const val stageName = "stage_name"
+    val routeWithArgs = "${route}/{${stageData}}/{${stageName}}"
+    val arguments = listOf(navArgument(stageData) { type = NavType.StringType },
+        navArgument(stageName) { type = NavType.StringType })
 }
 
 object StageSelector : AppDestination {

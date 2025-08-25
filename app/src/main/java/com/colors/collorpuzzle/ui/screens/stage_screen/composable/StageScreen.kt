@@ -49,7 +49,8 @@ import org.koin.core.parameter.parametersOf
 
 @Composable
 fun StageScreen(
-    modifier: Modifier, stageName: String,
+    modifier: Modifier,
+    stageName: String,
     backClick: () -> Unit,
     toDialog: (Boolean) -> Unit,
     stageData: String = "",

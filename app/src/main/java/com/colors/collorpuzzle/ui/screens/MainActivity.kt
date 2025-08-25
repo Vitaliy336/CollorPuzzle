@@ -35,6 +35,7 @@ import com.colors.collorpuzzle.ui.theme.ColorPuzzleTheme
 
 
 private const val TAG = "MainActivity"
+const val randomPalette = "random_palette"
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,13 +64,13 @@ class MainActivity : ComponentActivity() {
                         navController.navigate(StageSelector.route)
                     },
                     randomStageClicked = {
-                        // TODO:
+                        navController.navigateToCustomGameScreen(stageName = randomPalette)
                     },
                     constructorClicked = {
                         navController.navigate(StageConstructor.route)
                     },
                     launchCustomStage = {
-                        navController.navigateToCustomGameScreen(it)
+                        navController.navigateToCustomGameScreen(it, customPalette)
                     })
             }
 
@@ -115,7 +116,8 @@ class MainActivity : ComponentActivity() {
                     ShowDialog(
                         isStageCleared = isCleared == DialogState.STAGE_CLEARED,
                         confirmClick = {
-                            val destinationRoute = if (stageName == customPalette) MainMenu.route else StageConstructor.route
+                            val destinationRoute =
+                                if (stageName == customPalette) MainMenu.route else StageConstructor.route
                             navController.popBackStack(destinationRoute, inclusive = false)
                         },
                         dismissClick = {
@@ -147,14 +149,18 @@ class MainActivity : ComponentActivity() {
                 val parentEntry =
                     remember(entry) { navController.getBackStackEntry(CustomGameScreen.routeWithArgs) }
                 val stageData = parentEntry.arguments?.getString(CustomGameScreen.stageData) ?: ""
+                val stageName = parentEntry.arguments?.getString(CustomGameScreen.stageName) ?: ""
                 StageScreen(
                     modifier = Modifier.Companion,
-                    stageName = customPalette,
+                    stageName = stageName,
                     backClick = {
                         navController.navigateUp()
                     },
                     toDialog = {
-                        navController.openDialog(DialogState.STAGE_CLEARED, stageName = customPalette)
+                        navController.openDialog(
+                            DialogState.STAGE_CLEARED,
+                            stageName = customPalette
+                        )
                     },
                     stageData = stageData
                 )
@@ -179,8 +185,8 @@ class MainActivity : ComponentActivity() {
         )
     }
 
-    private fun NavHostController.navigateToCustomGameScreen(paletteData: String) {
-        this.navigate("${CustomGameScreen.route}/${paletteData}") {
+    private fun NavHostController.navigateToCustomGameScreen(stageName:String, paletteData: String = "") {
+        this.navigate("${CustomGameScreen.route}/${paletteData}/${stageName}") {
             launchSingleTop = true
         }
     }
