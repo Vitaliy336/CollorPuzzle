@@ -29,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.colors.collorpuzzle.data.CellType
+import com.colors.collorpuzzle.ui.shared.BlurredBoxComponent
 import kotlinx.coroutines.delay
 
 private val cubeColors = listOf<CellType>(
@@ -86,7 +87,9 @@ private fun JumpingBox(
             .clip(shape = RoundedCornerShape(30))
             .border(width = 2.dp, color = Color.LightGray, shape = RoundedCornerShape(30))
             .background(color = bgColor)
-    )
+    ) {
+        BlurredBoxComponent(modifier = Modifier.size(48.dp))
+    }
 
     LaunchedEffect(key1 = Unit) {
         delay(jumpDelay.toLong())

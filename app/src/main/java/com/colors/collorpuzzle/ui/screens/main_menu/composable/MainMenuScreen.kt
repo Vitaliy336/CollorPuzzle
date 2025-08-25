@@ -1,8 +1,8 @@
 package com.colors.collorpuzzle.ui.screens.main_menu.composable
 
 import android.widget.Toast
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
@@ -143,13 +144,15 @@ private fun StageImportEditText(
                 .weight(90f)
         )
 
-        Image(
-            imageVector = Icons.Default.Clear,
+        Icon(
+            imageVector = Icons.Filled.Clear,
+            tint = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier
                 .width(24.dp)
                 .height(24.dp)
-                .background(MaterialTheme.colorScheme.onSurface, CircleShape)
+                .background(MaterialTheme.colorScheme.surface, CircleShape)
                 .clip(shape = CircleShape)
+                .border(width = 2.dp, color = Color.Gray, shape = CircleShape)
                 .weight(10f)
                 .clickable(onClick = {
                     text.value = ""
@@ -157,13 +160,15 @@ private fun StageImportEditText(
             contentDescription = "clear"
         )
 
-        Image(
-            imageVector = Icons.Default.PlayArrow,
+        Icon(
+            imageVector = Icons.Filled.PlayArrow,
+            tint = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier
                 .height(24.dp)
                 .width(24.dp)
-                .background(MaterialTheme.colorScheme.onSurface, CircleShape)
+                .background(MaterialTheme.colorScheme.surface, CircleShape)
                 .clip(shape = CircleShape)
+                .border(width = 2.dp, color = Color.Gray, shape = CircleShape)
                 .weight(10f)
                 .clickable(onClick = {
                     playClick(text.value)

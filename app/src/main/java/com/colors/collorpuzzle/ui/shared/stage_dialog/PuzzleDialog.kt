@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.colors.collorpuzzle.R
 import com.colors.collorpuzzle.data.CellType
+import com.colors.collorpuzzle.ui.shared.BlurredBoxComponent
 
 
 @Composable
@@ -129,7 +130,9 @@ fun PaletteItem(
             .border(width = 1.dp, color = Color.Gray, shape = RoundedCornerShape(20f))
             .size(24.dp)
             .background(color = color.color)
-    )
+    ) {
+        BlurredBoxComponent(modifier = Modifier.size(24.dp))
+    }
 }
 
 @Composable

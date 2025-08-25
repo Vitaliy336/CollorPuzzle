@@ -19,9 +19,11 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.colors.collorpuzzle.BuildConfig
 import com.colors.collorpuzzle.data.CellType
-import com.colors.collorpuzzle.data.Matrix
 import com.colors.collorpuzzle.data.CellType.Companion.getCellColor
+import com.colors.collorpuzzle.data.Matrix
+import com.colors.collorpuzzle.ui.shared.BlurredBoxComponent
 
 @Composable
 fun BuildStageMatrix(
@@ -77,13 +79,19 @@ private fun MatrixItemBox(
             .clip(shape = RoundedCornerShape(5.dp))
             .background(cellType.color)
             .clickable {
-                Toast
-                    .makeText(context, "x-> $posX, y -> $posY", Toast.LENGTH_SHORT)
-                    .show()
+                if (BuildConfig.SHOW_MATRIX_MARKUP) {
+                    Toast
+                        .makeText(context, "x-> $posX, y -> $posY", Toast.LENGTH_SHORT)
+                        .show()
+                }
                 itemClick(posX, posY, cellType.colorValue)
             }
     ) {
-        Text(text = "$posX,$posY")
+        if(BuildConfig.SHOW_MATRIX_MARKUP) {
+            Text(text = "$posX,$posY")
+        }
+        BlurredBoxComponent(modifier = Modifier.width(cellWidth)
+            .height(cellHeight))
     }
 }
 
