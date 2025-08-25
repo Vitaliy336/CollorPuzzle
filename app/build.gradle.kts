@@ -19,6 +19,12 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        buildFeatures {
+            buildConfig = true // Enable BuildConfig generation
+        }
+
+        buildConfigField("boolean", "SHOW_MATRIX_MARKUP", "false")
     }
 
     buildTypes {

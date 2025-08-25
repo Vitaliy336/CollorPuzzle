@@ -113,7 +113,7 @@ private fun ColorSelector(
                 .padding(start = 8.dp, top = 8.dp, end = 4.dp, bottom = 8.dp)
                 .size(56.dp)
                 .border(
-                    2.dp, if (isSelected) Color.White
+                    2.dp, if (isSelected) Color.Gray
                     else Color.Transparent, CircleShape
                 )
                 .padding(1.dp)
@@ -157,7 +157,7 @@ private fun ColorSelector(
                         onDrawBehind {
                             rotate(degrees = 180F) {
                                 drawPath(
-                                    roundedPolygonPath, color = Color.White
+                                    roundedPolygonPath, color = Color.Gray
                                 )
                             }
                         }

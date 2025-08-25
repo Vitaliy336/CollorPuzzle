@@ -221,6 +221,7 @@ private fun ConstructorTemplate(
         Column(
             modifier = modifier
                 .fillMaxHeight()
+                .border(width = 2.dp, color = Color.Gray, shape = RoundedCornerShape(8))
                 .weight(70f)
         ) {
             PaletteConstructor(
