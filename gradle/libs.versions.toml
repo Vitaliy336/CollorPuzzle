@@ -1,26 +1,27 @@
 [versions]
 agp = "8.9.2"
-datastorePreferences = "1.1.6"
+datastorePreferences = "1.1.7"
 firebaseBom = "33.13.0"
-firebaseBomVersion = "33.13.0"
-graphicsShapes = "1.1.0-alpha01"
-gson = "2.10.1"
+firebaseBomVersion = "34.4.0"
+graphicsShapes = "1.1.0"
+gson = "2.13.2"
 koinAndroid = "3.2.0"
-koinAndroidVersion = "4.0.3"
+koinAndroidVersion = "4.1.1"
 koinAndroidxViewmodel = "3.2.0"
-koinCompose = "4.0.3"
-koinComposeViewmodel = "4.0.3"
-koinComposeViewmodelNavigation = "4.0.3"
+koinCompose = "4.1.1"
+koinComposeViewmodel = "4.1.1"
+koinComposeViewmodelNavigation = "4.1.1"
 koinCore = "3.2.0"
-kotlin = "1.9.0"
-coreKtx = "1.15.0"
+kotlin = "2.2.21"
+coreKtx = "1.17.0"
 junit = "4.13.2"
-junitVersion = "1.2.1"
-espressoCore = "3.6.1"
-lifecycleRuntimeKtx = "2.8.0"
-activityCompose = "1.9.0"
-composeBom = "2023.08.00"
-navigationCompose = "2.8.9"
+junitVersion = "1.3.0"
+espressoCore = "3.7.0"
+lifecycleRuntimeKtx = "2.9.4"
+activityCompose = "1.11.0"
+composeBom = "2025.10.01"
+navigationCompose = "2.9.5"
+uiTextGoogleFonts = "1.9.4"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -51,8 +52,11 @@ koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koinComp
 koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koinComposeViewmodel" }
 koin-compose-viewmodel-navigation = { module = "io.insert-koin:koin-compose-viewmodel-navigation", version.ref = "koinComposeViewmodelNavigation" }
 koin-core = { module = "org.koin:koin-core", version.ref = "koinCore" }
+androidx-compose-ui-text-google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts", version.ref = "uiTextGoogleFonts" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 

@@ -1,17 +1,18 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    alias(libs.plugins.compose.compiler)
     id("com.google.gms.google-services")
 }
 
 android {
     namespace = "com.colors.collorpuzzle"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.colors.collorpuzzle"
         minSdk = 28
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -81,6 +82,8 @@ dependencies {
     implementation(libs.koin.compose)
     implementation(libs.koin.compose.viewmodel)
     implementation(libs.koin.compose.viewmodel.navigation)
+    implementation(libs.androidx.compose.ui.text.google.fonts)
+    implementation("androidx.compose.material:material-icons-extended:1.7.8")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
