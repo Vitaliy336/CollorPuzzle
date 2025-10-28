@@ -1,5 +1,6 @@
 package com.colors.collorpuzzle.ui.screens.stage_selector.composable
 
+import android.content.res.Configuration
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -45,6 +46,7 @@ import com.colors.collorpuzzle.ui.shared.loader.ShowLoader
 import com.colors.collorpuzzle.ui.screens.stage_selector.view_model.StageSelectionIntent
 import com.colors.collorpuzzle.ui.screens.stage_selector.view_model.StageSelectorViewModel
 import com.colors.collorpuzzle.ui.screens.stage_selector.view_model.StagesData
+import com.colors.collorpuzzle.ui.theme.AppTheme
 import org.koin.compose.viewmodel.koinViewModel
 
 private const val TAG = "StageSelector"
@@ -62,24 +64,22 @@ fun StageSelectorScreen(
         vm.handleIntent(StageSelectionIntent.FetchStages)
     }
 
-    Surface {
-        when (state.value) {
-            is StageSelectorViewModel.LevelsState.Loading -> {
-                ShowLoader(isFinished = {})
-            }
+    when (state.value) {
+        is StageSelectorViewModel.LevelsState.Loading -> {
+            ShowLoader(isFinished = {})
+        }
 
-            is StageSelectorViewModel.LevelsState.Error -> {
-                Log.d(TAG, "StageSelectorScreen: ")
-            }
+        is StageSelectorViewModel.LevelsState.Error -> {
+            Log.d(TAG, "StageSelectorScreen: ")
+        }
 
-            is StageSelectorViewModel.LevelsState.Success -> {
-                ShowStages(
-                    stagesData = (state.value as StageSelectorViewModel.LevelsState.Success).data,
-                    modifier = modifier,
-                    backClick = backClick,
-                    selectStageClick = selectStageClick
-                )
-            }
+        is StageSelectorViewModel.LevelsState.Success -> {
+            ShowStages(
+                stagesData = (state.value as StageSelectorViewModel.LevelsState.Success).data,
+                modifier = modifier,
+                backClick = backClick,
+                selectStageClick = selectStageClick
+            )
         }
     }
 }
@@ -91,41 +91,44 @@ private fun ShowStages(
     backClick: () -> Unit,
     selectStageClick: (stageName: String) -> Unit,
 ) {
-    Column(
-        modifier = modifier
-            .windowInsetsPadding(WindowInsets.safeDrawing)
-            .padding(
-                start = 16.dp,
-                end = 16.dp,
-                top = 20.dp,
-                bottom = 20.dp
-            )
-    ) {
-        BackButton(
-            modifier = Modifier.align(alignment = Alignment.End),
-            backClick = backClick
-        )
-
-        Text(
-            text = stringResource(R.string.stage_select), modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
+    AppTheme {
+        Column(
+            modifier = modifier
+                .background(MaterialTheme.colorScheme.background)
+                .windowInsetsPadding(WindowInsets.safeDrawing)
                 .padding(
-                    start = 8.dp,
-                    end = 8.dp,
-                    top = 12.dp,
-                    bottom = 12.dp
-                ),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.onSurface
-        )
+                    start = 16.dp,
+                    end = 16.dp,
+                    top = 20.dp,
+                    bottom = 20.dp
+                )
+        ) {
+            BackButton(
+                modifier = Modifier.align(alignment = Alignment.End),
+                backClick = backClick
+            )
+
+            Text(
+                text = stringResource(R.string.stage_select), modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .padding(
+                        start = 8.dp,
+                        end = 8.dp,
+                        top = 12.dp,
+                        bottom = 12.dp
+                    ),
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.headlineMedium,
+                color = MaterialTheme.colorScheme.onBackground
+            )
 
 
-        StagesList(
-            stagesList = stagesData,
-            stageClick = selectStageClick
-        )
+            StagesList(
+                stagesList = stagesData,
+                stageClick = selectStageClick
+            )
+        }
     }
 }
 
@@ -187,7 +190,7 @@ private fun StagesRow(
                     stageName = stageItems[index].stageName,
                     stageIndex = index.toString(),
                     isCleared = stageItems[index].isCleared,
-                    modifier =  modifier.padding(vertical = 4.dp),
+                    modifier = modifier.padding(vertical = 4.dp),
                     stageClick = stageClick
                 )
             }
@@ -207,14 +210,13 @@ private fun CategoryHeader(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(10))
-            .background(MaterialTheme.colorScheme.primaryContainer)
             .padding(
                 start = 8.dp, end = 8.dp,
                 top = 16.dp, bottom = 16.dp
             )
             .border(
                 width = 2.dp,
-                color = MaterialTheme.colorScheme.primaryContainer,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
                 shape = RoundedCornerShape(10)
             ),
         textAlign = TextAlign.Center
@@ -261,13 +263,57 @@ private fun StagesRowPreview() {
     )
 }
 
-@Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun ShowStagesListPreviewNight() {
+    ShowStages(
+        stagesData = listOf<StagesData>(
+            StagesData(
+                "group 1",
+                listOf(
+                    StagesData.StageData("stage1", false),
+                    StagesData.StageData("stage2", true),
+                    StagesData.StageData("stage2", false),
+                )
+            ),
+            StagesData(
+                "group 2",
+                listOf(
+                    StagesData.StageData("stage1", true),
+                    StagesData.StageData("stage2", true),
+                    StagesData.StageData("stage2", false),
+                )
+            )
+        ),
+        modifier = Modifier,
+        backClick = {},
+        selectStageClick = {},
+    )
+}@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 private fun ShowStagesListPreview() {
-    StageSelectorScreen(
-        modifier = Modifier.fillMaxSize(),
+    ShowStages(
+        stagesData = listOf<StagesData>(
+            StagesData(
+                "group 1",
+                listOf(
+                    StagesData.StageData("stage1", false),
+                    StagesData.StageData("stage2", true),
+                    StagesData.StageData("stage2", false),
+                )
+            ),
+            StagesData(
+                "group 2",
+                listOf(
+                    StagesData.StageData("stage1", true),
+                    StagesData.StageData("stage2", true),
+                    StagesData.StageData("stage2", false),
+                )
+            )
+        ),
+        modifier = Modifier,
         backClick = {},
-        selectStageClick = {}
+        selectStageClick = {},
     )
 }
 

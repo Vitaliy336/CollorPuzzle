@@ -31,7 +31,7 @@ import com.colors.collorpuzzle.ui.screens.stage_constructor.stage_constructor.cu
 import com.colors.collorpuzzle.ui.screens.stage_screen.composable.StageScreen
 import com.colors.collorpuzzle.ui.screens.stage_selector.composable.StageSelectorScreen
 import com.colors.collorpuzzle.ui.shared.stage_dialog.PuzzleDialog
-import com.colors.collorpuzzle.ui.theme.ColorPuzzleTheme
+import com.colors.collorpuzzle.ui.theme.AppTheme
 
 
 private const val TAG = "MainActivity"
@@ -42,10 +42,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            ColorPuzzleTheme {
+            AppTheme {
                 Surface(
                     modifier = Modifier.Companion.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
                 ) {
                     NavigationComponent()
                 }

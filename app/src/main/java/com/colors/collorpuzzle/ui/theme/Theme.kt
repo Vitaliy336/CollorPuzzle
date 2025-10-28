@@ -16,19 +16,39 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = colorPrimaryDark,
+    onPrimary = colorOnPrimaryDark,
+    primaryContainer = colorPrimaryContainerDark,
+    onPrimaryContainer = colorOnPrimaryContainerDark,
+    secondary = colorSecondaryDark,
+    onSecondary = colorOnSecondaryDark,
+    secondaryContainer = colorSecondaryContainerDark ,
+    onSecondaryContainer = colorOnSecondaryContainerDark,
+    surface = colorSurfaceDark,
+    onSurface = colorOnSurfaceDark,
+    tertiary = colorTertiaryDark,
+    onTertiary = colorOnTertiaryDark,
+    background = colorBackgroundDark,
+    onBackground = colorOnBackgroundDark
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
+    primary = colorPrimaryLight,
+    onPrimary = colorOnPrimaryLight,
+    primaryContainer = colorPrimaryContainerLight,
+    onPrimaryContainer = colorOnPrimaryContainerLight,
+    secondary = colorSecondaryLight,
+    onSecondary = colorOnSecondaryLight,
+    secondaryContainer = colorOnSecondaryLight ,
+    onSecondaryContainer = colorOnSecondaryContainerLight,
+    surface = colorSurfaceLight,
+    onSurface = colorOnSurfaceLight,
+    background = colorBackgroundLight,
+    onBackground = colorOnBackgroundLight
 )
 
 @Composable
-fun ColorPuzzleTheme(
+fun AppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
