@@ -70,7 +70,7 @@ class MainActivity : ComponentActivity() {
                         navController.navigate(StageConstructor.route)
                     },
                     launchCustomStage = {
-                        navController.navigateToCustomGameScreen(it, customPalette)
+                        navController.navigateToCustomGameScreen(stageName = customPalette, paletteData = it)
                     })
             }
 
@@ -117,7 +117,7 @@ class MainActivity : ComponentActivity() {
                         isStageCleared = isCleared == DialogState.STAGE_CLEARED,
                         confirmClick = {
                             val destinationRoute =
-                                if (stageName == customPalette) MainMenu.route else StageConstructor.route
+                                if (stageName == customPalette) MainMenu.route else StageSelector.route
                             navController.popBackStack(destinationRoute, inclusive = false)
                         },
                         dismissClick = {
