@@ -1,6 +1,8 @@
 package com.colors.collorpuzzle.ui.screens.main_menu.composable
 
+import android.content.res.Configuration
 import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -17,10 +19,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -41,6 +43,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.colors.collorpuzzle.R
 import com.colors.collorpuzzle.ui.screens.main_menu.view_model.MainMenuViewModel
+import com.colors.collorpuzzle.ui.theme.AppTheme
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -58,17 +61,18 @@ fun ShowMainMenu(
     var showExportDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
-    Surface {
+    AppTheme {
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = modifier
+                .background(color = MaterialTheme.colorScheme.primaryContainer)
         ) {
             Text(
                 text = stringResource(R.string.main_menu),
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onPrimaryContainer
             )
             val btnModifier: Modifier = Modifier
                 .height(56.dp)
@@ -100,7 +104,11 @@ fun ShowMainMenu(
             when (currentState) {
                 MainMenuViewModel.PaletteState.Initial -> {} // can be skipped
                 is MainMenuViewModel.PaletteState.Error -> {
-                    Toast.makeText(context, stringResource(currentState.error), Toast.LENGTH_SHORT)
+                    Toast.makeText(
+                        context,
+                        stringResource(currentState.error),
+                        Toast.LENGTH_SHORT
+                    )
                         .show()
                 }
 
@@ -117,7 +125,8 @@ private fun StageImportEditText(
     modifier: Modifier = Modifier,
     playClick: (String) -> Unit,
 ) {
-    val text = remember { mutableStateOf("") }
+    val text =
+        remember { mutableStateOf("") }
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -134,6 +143,8 @@ private fun StageImportEditText(
             shape = RoundedCornerShape(percent = 48),
             singleLine = true,
             colors = TextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerLow,
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
                 disabledIndicatorColor = Color.Transparent,
@@ -152,7 +163,7 @@ private fun StageImportEditText(
                 .height(24.dp)
                 .background(MaterialTheme.colorScheme.surface, CircleShape)
                 .clip(shape = CircleShape)
-                .border(width = 2.dp, color = Color.Gray, shape = CircleShape)
+                .border(width = 2.dp, color = MaterialTheme.colorScheme.onPrimaryContainer, shape = CircleShape)
                 .weight(10f)
                 .clickable(onClick = {
                     text.value = ""
@@ -168,7 +179,7 @@ private fun StageImportEditText(
                 .width(24.dp)
                 .background(MaterialTheme.colorScheme.surface, CircleShape)
                 .clip(shape = CircleShape)
-                .border(width = 2.dp, color = Color.Gray, shape = CircleShape)
+                .border(width = 2.dp, color = MaterialTheme.colorScheme.onPrimaryContainer, shape = CircleShape)
                 .weight(10f)
                 .clickable(onClick = {
                     playClick(text.value)
@@ -186,18 +197,48 @@ private fun MenuButton(
 ) {
     OutlinedButton(
         onClick = click,
+        colors = ButtonColors(
+            containerColor = MaterialTheme.colorScheme.inversePrimary,
+            contentColor = MaterialTheme.colorScheme.inversePrimary,
+            disabledContentColor = MaterialTheme.colorScheme.inversePrimary,
+            disabledContainerColor = MaterialTheme.colorScheme.primary
+        ),
+        border = BorderStroke(2.dp, color = MaterialTheme.colorScheme.onSecondaryContainer),
         modifier = modifier
     ) {
-        Text(text = text)
+        Text(text = text, color = MaterialTheme.colorScheme.onSurface)
     }
 }
 
 
-@Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 private fun ButtonPreview() {
-    MenuButton(
-        modifier = Modifier,
-        "Some Text",
-        {})
+    AppTheme {
+        Column(
+            modifier = Modifier
+                .background(color = MaterialTheme.colorScheme.primaryContainer)
+        ) {
+            MenuButton(
+                modifier = Modifier,
+                "Some Text",
+                {})
+        }
+    }
+}
+
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun ButtonPreviewNight() {
+    AppTheme {
+        Column(
+            modifier = Modifier
+                .background(color = MaterialTheme.colorScheme.primaryContainer)
+        ) {
+            MenuButton(
+                modifier = Modifier,
+                "Some Text",
+                {})
+        }
+    }
 }
