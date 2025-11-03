@@ -12,9 +12,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
@@ -22,6 +24,7 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -94,7 +97,7 @@ private fun ShowStages(
     AppTheme {
         Column(
             modifier = modifier
-                .background(MaterialTheme.colorScheme.background)
+                .background(MaterialTheme.colorScheme.primaryContainer)
                 .windowInsetsPadding(WindowInsets.safeDrawing)
                 .padding(
                     start = 16.dp,
@@ -120,7 +123,7 @@ private fun ShowStages(
                     ),
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.onBackground
+                color = MaterialTheme.colorScheme.onPrimaryContainer
             )
 
 
@@ -130,6 +133,7 @@ private fun ShowStages(
             )
         }
     }
+
 }
 
 @Composable
@@ -177,6 +181,7 @@ private fun StagesRow(
     Column(
         modifier = modifier
             .fillMaxWidth()
+            .padding(start = 8.dp, end = 8.dp)
             .wrapContentHeight()
     ) {
         CategoryHeader(text = stageHeader, modifier = modifier)
@@ -203,24 +208,24 @@ private fun CategoryHeader(
     text: String,
     modifier: Modifier = Modifier,
 ) {
+    Spacer(modifier.height(8.dp))
     Text(
         text = text,
         fontSize = 16.sp,
         fontWeight = FontWeight.Bold,
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(10))
-            .padding(
-                start = 8.dp, end = 8.dp,
-                top = 16.dp, bottom = 16.dp
-            )
+            .clip(CircleShape)
+            .background(color = MaterialTheme.colorScheme.tertiaryFixed)
             .border(
                 width = 2.dp,
                 color = MaterialTheme.colorScheme.onSecondaryContainer,
-                shape = RoundedCornerShape(10)
+                shape = CircleShape
             ),
-        textAlign = TextAlign.Center
+        textAlign = TextAlign.Center,
+        color = MaterialTheme.colorScheme.onTertiaryFixed
     )
+    Spacer(modifier = modifier.height(8.dp))
 }
 
 @Composable
@@ -237,19 +242,19 @@ private fun StageItem(
             .clip(RoundedCornerShape(percent = 30))
             .size(64.dp)
             .background(
-                if (isCleared) colorResource(R.color.white) else
-                    colorResource(R.color.teal_200)
+                if (isCleared) MaterialTheme.colorScheme.tertiary else
+                    MaterialTheme.colorScheme.onSurfaceVariant
             )
             .border(
                 width = 2.dp,
-                color = colorResource(R.color.purple_200),
+                color = MaterialTheme.colorScheme.onSurface,
                 shape = RoundedCornerShape(percent = 30)
             )
             .clickable {
                 stageClick(stageName)
             }
     ) {
-        Text(text = stageIndex, color = colorResource(R.color.purple_200))
+        Text(text = stageIndex, color = MaterialTheme.colorScheme.background)
     }
 }
 
@@ -289,7 +294,9 @@ private fun ShowStagesListPreviewNight() {
         backClick = {},
         selectStageClick = {},
     )
-}@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
+}
+
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 private fun ShowStagesListPreview() {
     ShowStages(
