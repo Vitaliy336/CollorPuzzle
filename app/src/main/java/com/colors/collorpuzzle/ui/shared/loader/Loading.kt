@@ -1,5 +1,6 @@
 package com.colors.collorpuzzle.ui.shared.loader
 
+import android.content.res.Configuration
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
@@ -11,13 +12,18 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -30,6 +36,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.colors.collorpuzzle.data.CellType
 import com.colors.collorpuzzle.ui.shared.BlurredBoxComponent
+import com.colors.collorpuzzle.ui.theme.AppTheme
 import kotlinx.coroutines.delay
 
 private val cubeColors = listOf<CellType>(
@@ -44,28 +51,35 @@ fun ShowLoader(
     modifier: Modifier = Modifier,
     isFinished: () -> Unit,
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(horizontal = 96.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
+    AppTheme {
+        Column(
             modifier = modifier
-                .wrapContentWidth()
-                .padding(top = 24.dp, bottom = 24.dp, start = 32.dp, end = 32.dp)
-                .wrapContentHeight()
+                .fillMaxSize()
+                .background(color = MaterialTheme.colorScheme.primaryContainer),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            var delay = 0
-            cubeColors.forEach {
-                JumpingBox(delay, it.color)
-                delay += 100
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = modifier
+                    .wrapContentWidth()
+                  //  .padding(top = 24.dp, bottom = 24.dp, start = 32.dp, end = 32.dp)
+                    .wrapContentHeight()
+            ) {
+                var delay = 0
+                cubeColors.forEach {
+                    JumpingBox(delay, it.color)
+                    delay += 100
+                }
+            }
+            Spacer(Modifier.height(24.dp))
+            Box(Modifier.height(48.dp)
+                .fillMaxWidth()
+                .padding(horizontal = 96.dp)) {
+                LinearDeterminateIndicator(isFinished = isFinished)
             }
         }
-        LinearDeterminateIndicator(isFinished = isFinished)
     }
 }
 
@@ -85,7 +99,7 @@ private fun JumpingBox(
             .size(48.dp)
             .offset { IntOffset(0, offsetY.value.toInt()) }
             .clip(shape = RoundedCornerShape(30))
-            .border(width = 2.dp, color = Color.LightGray, shape = RoundedCornerShape(30))
+            .border(width = 2.dp, color = MaterialTheme.colorScheme.onSurface, shape = RoundedCornerShape(30))
             .background(color = bgColor)
     ) {
         BlurredBoxComponent(modifier = Modifier.size(48.dp))
@@ -118,8 +132,22 @@ private fun JumpingBox(
     }
 }
 
-@Preview
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_NO,
+    widthDp = 700,
+    heightDp = 200
+)
 @Composable
 private fun LoaderPreview() {
+    ShowLoader(isFinished = {})
+}
+
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    widthDp = 700,
+    heightDp = 200
+)
+@Composable
+private fun LoaderPreviewNight() {
     ShowLoader(isFinished = {})
 }

@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableFloatStateOf
@@ -19,7 +21,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun LinearDeterminateIndicator(isFinished: () -> Unit) {
-    var currentProgress = remember { mutableFloatStateOf(0f) }
+    val currentProgress = remember { mutableFloatStateOf(0f) }
     val scope = rememberCoroutineScope()
 
     Column(
@@ -41,13 +43,15 @@ fun LinearDeterminateIndicator(isFinished: () -> Unit) {
     }
 
     LinearProgressIndicator(
-        progress = currentProgress.floatValue,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(12.dp),
+    progress = { currentProgress.floatValue },
+    modifier = Modifier
+                .fillMaxWidth()
+                .height(12.dp),
+    color = MaterialTheme.colorScheme.tertiary,
+    trackColor = MaterialTheme.colorScheme.onSurface,
+    strokeCap = ProgressIndicatorDefaults.LinearStrokeCap,
     )
 }
-
 
 // just simulate loading
 private suspend fun loadProgress(updateProgress: (Float) -> Unit) {
