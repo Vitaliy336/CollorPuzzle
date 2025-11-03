@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -124,7 +123,7 @@ private fun JumpingBox(
                 animation = tween(
                     durationMillis = jumpDurationDown,
                     easing = LinearEasing,
-                    delayMillis = jumpDelay.toInt()
+                    delayMillis = jumpDelay
                 ),
                 repeatMode = RepeatMode.Reverse
             )
