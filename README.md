@@ -1,6 +1,6 @@
 
 ## Color puzzle 
-This project is inspired by a game I've been playing; the main goal is to fill a palette with the same colour.
+This project is inspired by a game I've been playing; the main goal is to fill a palette with the same color.
 Made for Android platform.
 
 **Build With:**
